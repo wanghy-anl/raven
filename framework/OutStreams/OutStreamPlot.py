@@ -679,7 +679,7 @@ class OutStreamPlot(OutStreamManager):
       ## cause this thing to fail.
       try:
         self.fig.ginput(n = -1, timeout = 0, show_clicks = False)
-      except:
+      except Exception as e:
         ## I know this is bad, but it is a single line of code outside our
         ## control, if it fails for any reason it should not be a huge deal, we
         ## just want RAVEN to continue on its merry way when a figure closes.
@@ -958,8 +958,6 @@ class OutStreamPlot(OutStreamManager):
             plt.subplot(self.gridSpace[x[0]:x[-1], y[0]:y[-1]])
           else:
             self.plt3D = plt.subplot(self.gridSpace[x[0]:x[-1], y[0]:y[-1]], projection = '3d')
-      elif self.dim == 3:
-        self.plt3D = plt.subplot(111, projection='3d')
 
       # calling "plt.hold" has been deprecated.
       # If the figure isn't cleared (or a new figure opened), it will keep adding plots.
