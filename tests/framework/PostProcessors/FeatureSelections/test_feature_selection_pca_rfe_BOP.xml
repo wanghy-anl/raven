@@ -21,10 +21,10 @@
   
   <Models>
     <PostProcessor name="FeatureSelectionRFE" subType="FeatureSelection">
-      <what>RFE</what>
+      <what>RFECV</what>
       <features>PCADimensions</features>
       <targets>outputvars</targets>
-      <minimumNumberOfFeatures>30</minimumNumberOfFeatures>
+      <minimumNumberOfFeatures>10</minimumNumberOfFeatures>
       <aggregateTargets>True</aggregateTargets>
     </PostProcessor>
     <PostProcessor name="PCA" subType="DataMining" verbosity="quiet">
@@ -65,7 +65,7 @@
       <Input class="DataObjects" type="PointSet">DataSets</Input>
       <Model class="Models" type="PostProcessor">DataObjectVariablesSelector</Model>
       <Output class="DataObjects" type="PointSet">TrainingSet</Output>
-      <Output class="OutStreams" type="Print">printTrainingSet</Output>
+      <Output class="OutStreams" type="Print">printTrainingSet_BOP</Output>
     </PostProcess>
  
   </Steps>
@@ -86,45 +86,9 @@
       <Output>FeatureSelectionRFE_BOP.portElec_b.W,FeatureSelectionRFE_BOP.steamTurbine.portHP.p</Output>
     </PointSet>
     <PointSet name="TrainingSet">
-      <!-- <Input>  -->
-	  <!-- PCADimension1 -->
-	  <!-- </Input> -->
-	  <!-- <Input>  -->
-	  <!-- PCADimension1,PCADimension9 -->
-	  <!-- </Input> -->
-	  <!-- <Input>  -->
-	  <!-- PCADimension1,PCADimension9,PCADimension26 -->
-	  <!-- </Input> -->
-	  <!-- <Input>  -->
-	  <!-- PCADimension1,PCADimension9,PCADimension26,PCADimension2 -->
-	  <!-- </Input> -->
-	  <!-- <Input>  -->
-	  <!-- PCADimension1,PCADimension9,PCADimension26,PCADimension2,PCADimension21 -->
-	  <!-- </Input> -->
-	  <!-- <Input>  -->
-	  <!-- PCADimension1,PCADimension9,PCADimension26,PCADimension2,PCADimension21,PCADimension19 -->
-	  <!-- </Input> -->
-	  <!-- <Input>	  PCADimension1,PCADimension9,PCADimension26,PCADimension2,PCADimension21,PCADimension19,PCADimension25 -->
-	  <!-- </Input> -->
-	  <!-- <Input>	  PCADimension1,PCADimension9,PCADimension26,PCADimension2,PCADimension21,PCADimension19,PCADimension25,PCADimension8 -->
-	  <!-- </Input> -->
-	  <!-- <Input>PCADimension1,PCADimension9,PCADimension26,PCADimension2,PCADimension21,PCADimension19,PCADimension25,PCADimension8,PCADimension30 -->
-	  <!-- </Input> -->
-	  <!-- <Input>PCADimension1,PCADimension9,PCADimension26,PCADimension2,PCADimension21,PCADimension19,PCADimension25,PCADimension8,PCADimension30,PCADimension3 -->
-	  <!-- </Input> -->
-	  <!-- <Input>PCADimension1,PCADimension9,PCADimension26,PCADimension2,PCADimension21,PCADimension19,PCADimension25,PCADimension8,PCADimension30,PCADimension3,PCADimension10 -->
-	  <!-- </Input> -->
-	  <!-- <Input>PCADimension1,PCADimension9,PCADimension26,PCADimension2,PCADimension21,PCADimension19,PCADimension25,PCADimension8,PCADimension30,PCADimension3,PCADimension10,PCADimension24 -->
-	  <!-- </Input> -->
-	  <!-- <Input>PCADimension1,PCADimension9,PCADimension26,PCADimension2,PCADimension21,PCADimension19,PCADimension25,PCADimension8,PCADimension30,PCADimension3,PCADimension10,PCADimension24,PCADimension6 -->
-	  <!-- </Input> -->
-	  <!-- <Input>PCADimension1,PCADimension9,PCADimension26,PCADimension2,PCADimension21,PCADimension19,PCADimension25,PCADimension8,PCADimension30,PCADimension3,PCADimension10,PCADimension24,PCADimension6,PCADimension14 -->
-	  <!-- </Input> -->
-	  <!-- <Input>PCADimension1,PCADimension9,PCADimension26,PCADimension2,PCADimension21,PCADimension19,PCADimension25,PCADimension8,PCADimension30,PCADimension3,PCADimension10,PCADimension24,PCADimension6,PCADimension14,PCADimension23 -->
-	  <!-- </Input> -->
-	  <Input>PCADimension1,PCADimension2,PCADimension3,PCADimension4,PCADimension5,PCADimension6,PCADimension7,PCADimension8,PCADimension9,PCADimension10,PCADimension11,PCADimension12,PCADimension13,PCADimension14,PCADimension15,PCADimension16,PCADimension17,PCADimension18,PCADimension19,PCADimension20,PCADimension21,PCADimension22,PCADimension23,PCADimension24,PCADimension25,PCADimension26,PCADimension27,PCADimension28,PCADimension29,PCADimension30
+	  <Input>PCADimension1,PCADimension2,PCADimension3,PCADimension6,PCADimension8,PCADimension9,PCADimension10,PCADimension14,PCADimension19,PCADimension21,PCADimension23,PCADimension24,PCADimension25,PCADimension26,PCADimension30
 	  </Input>
-      <Output>outputvars,Time,actuatorvars</Output>
+      <Output>Time,actuatorvars,outputvars</Output>
     </PointSet>
     
   </DataObjects>
@@ -138,7 +102,7 @@
         <type>csv</type>
         <source>pp_out</source>
       </Print>
-      <Print name="printTrainingSet">
+      <Print name="printTrainingSet_BOP">
         <type>csv</type>
         <source>TrainingSet</source>
       </Print>

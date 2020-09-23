@@ -20,7 +20,7 @@
   
   <Models>
     <PostProcessor name="FeatureSelectionRFE" subType="FeatureSelection">
-      <what>RFE</what>
+      <what>RFECV</what>
       <features>PCADimensions</features>
       <targets>outputvars</targets>
       <minimumNumberOfFeatures>10</minimumNumberOfFeatures>
@@ -64,7 +64,7 @@
       <Input class="DataObjects" type="PointSet">DataSets</Input>
       <Model class="Models" type="PostProcessor">DataObjectVariablesSelector</Model>
       <Output class="DataObjects" type="PointSet">TrainingSet</Output>
-      <Output class="OutStreams" type="Print">printTrainingSet</Output>
+      <Output class="OutStreams" type="Print">printTrainingSet_SES</Output>
     </PostProcess>
  
   </Steps>
@@ -85,37 +85,9 @@
       <Output>FeatureSelectionRFE_SES.portElec_b.W,FeatureSelectionRFE_SES.GTunit.Tf</Output>
     </PointSet>
     <PointSet name="TrainingSet">
-      <!-- <Input>  -->
-	  <!-- PCADimension1 -->
-	  <!-- </Input> -->
-	  <!-- <Input>  -->
-	  <!-- PCADimension1,PCADimension25 -->
-	  <!-- </Input> -->
-      <!-- <Input>  -->
-	  <!-- PCADimension1,PCADimension25,PCADimension24 -->
-	  <!-- </Input> -->
-	  <!-- <Input>  -->
-	  <!-- PCADimension1,PCADimension25,PCADimension24,PCADimension26 -->
-	  <!-- </Input> -->
-      <!-- <Input>  -->
-	  <!-- PCADimension1,PCADimension25,PCADimension24,PCADimension26,PCADimension17 -->
-	  <!-- </Input> -->
-	  <!-- <Input>  -->
-	  <!-- PCADimension1,PCADimension25,PCADimension24,PCADimension26,PCADimension17,PCADimension16 -->
-	  <!-- </Input> -->
-      <!-- <Input>  -->
-	  <!-- PCADimension1,PCADimension25,PCADimension24,PCADimension26,PCADimension17,PCADimension16,PCADimension13 -->
-	  <!-- </Input> -->
-	  <!-- <Input>  -->
-	  <!-- PCADimension1,PCADimension25,PCADimension24,PCADimension26,PCADimension17,PCADimension16,PCADimension13,PCADimension23 -->
-	  <!-- </Input> -->
-      <!-- <Input>  -->
-	  <!-- PCADimension1,PCADimension25,PCADimension24,PCADimension26,PCADimension17,PCADimension16,PCADimension13,PCADimension23,PCADimension27 -->
-	  <!-- </Input> -->
-	  <Input> PCADimension1,PCADimension25,PCADimension24,PCADimension26,PCADimension17,PCADimension16,PCADimension13,PCADimension23,PCADimension27,PCADimension28
+	  <Input> PCADimension1,PCADimension13,PCADimension16,PCADimension17,PCADimension22,PCADimension23,PCADimension24,PCADimension25,PCADimension26,PCADimension27,PCADimension28
 	  </Input>
-	  
-      <Output>outputvars,Time,actuatorvars</Output>
+      <Output>Time,actuatorvars,outputvars</Output>
     </PointSet>
     
   </DataObjects>
@@ -129,7 +101,7 @@
         <type>csv</type>
         <source>pp_out</source>
       </Print>
-      <Print name="printTrainingSet">
+      <Print name="printTrainingSet_SES">
         <type>csv</type>
         <source>TrainingSet</source>
       </Print>
