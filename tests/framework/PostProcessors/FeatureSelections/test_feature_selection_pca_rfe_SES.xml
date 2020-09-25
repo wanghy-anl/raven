@@ -20,10 +20,10 @@
   
   <Models>
     <PostProcessor name="FeatureSelectionRFE" subType="FeatureSelection">
-      <what>RFECV</what>
+      <what>RFE</what>
       <features>PCADimensions</features>
       <targets>outputvars</targets>
-      <minimumNumberOfFeatures>10</minimumNumberOfFeatures>
+      <minimumNumberOfFeatures>13</minimumNumberOfFeatures>
       <aggregateTargets>True</aggregateTargets>
     </PostProcessor>
     <PostProcessor name="PCA" subType="DataMining" verbosity="quiet">
@@ -85,8 +85,52 @@
       <Output>FeatureSelectionRFE_SES.portElec_b.W,FeatureSelectionRFE_SES.GTunit.Tf</Output>
     </PointSet>
     <PointSet name="TrainingSet">
-	  <Input> PCADimension1,PCADimension13,PCADimension16,PCADimension17,PCADimension22,PCADimension23,PCADimension24,PCADimension25,PCADimension26,PCADimension27,PCADimension28
+	  <!-- <Input> -->
+	  <!-- PCADimension1 -->
+	  <!-- </Input> -->
+	  <!-- <Input> -->
+	  <!-- PCADimension1,PCADimension25 -->
+	  <!-- </Input> -->
+	  <!-- <Input> -->
+	  <!-- PCADimension1,PCADimension25,PCADimension24 -->
+	  <!-- </Input> -->
+	  <!-- <Input> -->
+	  <!-- PCADimension1,PCADimension25,PCADimension24,PCADimension26 -->
+	  <!-- </Input> -->
+	  <!-- <Input> -->
+	  <!-- PCADimension1,PCADimension25,PCADimension24,PCADimension26,PCADimension17 -->
+	  <!-- </Input> -->
+	  <!-- <Input> -->
+	  <!-- PCADimension1,PCADimension25,PCADimension24,PCADimension26,PCADimension17,PCADimension16 -->
+	  <!-- </Input> -->
+	  <!-- <Input> -->
+	  <!-- PCADimension1,PCADimension25,PCADimension24,PCADimension26,PCADimension17,PCADimension16,PCADimension13 -->
+	  <!-- </Input> -->
+	  <!-- <Input> -->
+	  <!-- PCADimension1,PCADimension25,PCADimension24,PCADimension26,PCADimension17,PCADimension16,PCADimension13,PCADimension23 -->
+	  <!-- </Input> -->
+	  <!-- <Input> -->
+	  <!-- PCADimension1,PCADimension25,PCADimension24,PCADimension26,PCADimension17,PCADimension16,PCADimension13,PCADimension23,PCADimension27 -->
+	  <!-- </Input> -->
+	  <!-- <Input> -->
+	  <!-- PCADimension1,PCADimension25,PCADimension24,PCADimension26,PCADimension17,PCADimension16,PCADimension13,PCADimension23,PCADimension27,PCADimension28 -->
+	  <!-- </Input> -->
+	  <!-- <Input> -->
+	  <!-- PCADimension1,PCADimension25,PCADimension24,PCADimension26,PCADimension17,PCADimension16,PCADimension13,PCADimension23,PCADimension27,PCADimension28,PCADimension22 -->
+	  <!-- </Input> -->
+	  <!-- <Input> -->
+	  <!-- PCADimension1,PCADimension25,PCADimension24,PCADimension26,PCADimension17,PCADimension16,PCADimension13,PCADimension23,PCADimension27,PCADimension28,PCADimension22,PCADimension19 -->
+	  <!-- </Input> -->
+	  <Input>
+	  PCADimension1,PCADimension25,PCADimension24,PCADimension26,PCADimension17,PCADimension16,PCADimension13,PCADimension23,PCADimension27,PCADimension28,PCADimension22,PCADimension19,PCADimension21
 	  </Input>
+	  <!-- <Input> -->
+	  <!-- PCADimension1,PCADimension25,PCADimension24,PCADimension26,PCADimension17,PCADimension16,PCADimension13,PCADimension23,PCADimension27,PCADimension28,PCADimension22,PCADimension19,PCADimension21,PCADimension20 -->
+	  <!-- </Input> -->
+	  <!-- <Input> -->
+	  <!-- PCADimension1,PCADimension25,PCADimension24,PCADimension26,PCADimension17,PCADimension16,PCADimension13,PCADimension23,PCADimension27,PCADimension28,PCADimension22,PCADimension19,PCADimension21,PCADimension20,PCADimension18 -->
+	  <!-- </Input> -->
+	  
       <Output>Time,actuatorvars,outputvars</Output>
     </PointSet>
     

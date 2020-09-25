@@ -21,10 +21,10 @@
   
   <Models>
     <PostProcessor name="FeatureSelectionRFE" subType="FeatureSelection">
-      <what>RFECV</what>
+      <what>RFE</what>
       <features>PCADimensions</features>
       <targets>outputvars</targets>
-      <minimumNumberOfFeatures>1</minimumNumberOfFeatures>
+      <minimumNumberOfFeatures>8</minimumNumberOfFeatures>
       <aggregateTargets>True</aggregateTargets>
     </PostProcessor>
     <PostProcessor name="PCA" subType="DataMining" verbosity="quiet">
@@ -86,8 +86,28 @@
       <Output>FeatureSelectionRFE_ES.portElec_b.W,FeatureSelectionRFE_ES.battery.E</Output>
     </PointSet>
     <PointSet name="TrainingSet">
-	  <Input>PCADimension1,PCADimension2,PCADimension3,PCADimension4,PCADimension5,PCADimension6,PCADimension7,PCADimension8,PCADimension25,PCADimension26
+	  <!-- <Input> -->
+	  <!-- PCADimension4 -->
+	  <!-- </Input> -->
+	  <!-- <Input> -->
+	  <!-- PCADimension4,PCADimension3 -->
+	  <!-- </Input> -->
+	  <!-- <Input> -->
+	  <!-- PCADimension4,PCADimension3,PCADimension6 -->
+	  <!-- </Input> -->
+	  <!-- <Input> -->
+	  <!-- PCADimension4,PCADimension3,PCADimension6,PCADimension5 -->
+	  <!-- </Input> -->
+	  <!-- <Input> -->
+	  <!-- PCADimension4,PCADimension3,PCADimension6,PCADimension5,PCADimension2 -->
+	  <!-- </Input> -->
+	  <!-- <Input> -->
+	  <!-- PCADimension4,PCADimension3,PCADimension6,PCADimension5,PCADimension2,PCADimension1 -->
+	  <!-- </Input> -->
+	  <Input>
+	  PCADimension4,PCADimension3,PCADimension6,PCADimension5,PCADimension2,PCADimension1,PCADimension24
 	  </Input>
+	  
       <Output>Time,actuatorvars,outputvars</Output>
     </PointSet>
     
