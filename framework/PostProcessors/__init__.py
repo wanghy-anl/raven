@@ -49,6 +49,7 @@ from .FTImporter import FTImporter
 from .DataClassifier import DataClassifier
 from .ComparisonStatisticsModule import ComparisonStatistics
 from .RealizationAverager import RealizationAverager
+from .ParetoFrontierPostProcessor import ParetoFrontier
 from .MCSimporter import MCSImporter
 from .ParetoFrontierPostProcessor import ParetoFrontier
 from .FeatureSelection import FeatureSelection

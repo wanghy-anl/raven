@@ -126,7 +126,7 @@ class BasicStatistics(PostProcessor):
     self.methodsToRun = []  # if a function is present, its outcome name is here stored... if it matches one of the known outcomes, the pp is going to use the function to compute it
     self.externalFunction = []
     self.printTag = 'POSTPROCESSOR BASIC STATISTIC'
-    self.addAssemblerObject('Function','-1', True)
+    self.addAssemblerObject('Function', InputData.Quantity.zero_to_one)
     self.biased = False # biased statistics?
     self.pivotParameter = None # time-dependent statistics pivot parameter
     self.pivotValue = None # time-dependent statistics pivot parameter values
@@ -281,17 +281,6 @@ class BasicStatistics(PostProcessor):
         metaParams.update(params)
     metaKeys = inputMetaKeys + outputMetaKeys
     self.addMetaKeys(metaKeys,metaParams)
-
-  def _localReadMoreXML(self, xmlNode):
-    """
-      Function to read the portion of the xml input that belongs to this specialized class
-      and initialize some stuff based on the inputs got
-      @ In, xmlNode, xml.etree.Element, Xml element node
-      @ Out, None
-    """
-    paramInput = self.getInputSpecification()()
-    paramInput.parseNode(xmlNode)
-    self._handleInput(paramInput)
 
   def _handleInput(self, paramInput):
     """
@@ -543,12 +532,11 @@ class BasicStatistics(PostProcessor):
     sortedWeightsAndPoints = np.insert(np.asarray(list(zip(pbWeight[idxs],arrayIn[idxs]))),0,[0.0,arrayIn[idxs[0]]],axis=0)
     weightsCDF             = np.cumsum(sortedWeightsAndPoints[:,0])
     try:
-      index = utils.find_le_index(weightsCDF,percent)
+      index = utils.first(np.asarray(weightsCDF <= percent).nonzero())[-1]
       result = sortedWeightsAndPoints[index,1]
     except ValueError:
       result = np.percentile(arrayIn,percent,interpolation='lower')
     return result
-
 
   def __runLocal(self, inputData):
     """
