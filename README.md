@@ -113,24 +113,6 @@ This project is supported by [Idaho National Laboratory](https://www.inl.gov/).
 
 [Unsupported Open Source Software](https://github.com/IdahoLabCuttingBoard)
 
-### Hi there 👋, Raven
-#### Risk Analysis Virtual Environment
-RAVEN is designed to perform parametric and probabilistic analysis based on the response of complex system codes. RAVEN is capable of investigating the system response as well as the input space using Monte Carlo, Grid, or Latin Hyper Cube sampling schemes, but its strength is focused toward system feature discovery, such as limit surfaces, separating regions of the input space leading to system failure, using dynamic supervised learning techniques. RAVEN includes the following major capabilities:
-- Sampling of codes for uncertainty quantification and reliability analyses
-- Generation and use of reduced-order models (also known as surrogate)
-- Data post-processing (time dependent and steady state)
-- Time dependent and steady state, statistical estimation and sensitivity analysis (mean, variance, sensitivity coefficients, etc.).
-The RAVEN statistical analysis framework can be employed for several types of applications:
-
-- Uncertainty Quantification
-- Sensitivity Analysis / Regression Analysis
-- Probabilistic Risk and Reliability Analysis (PRA)
-- Data Mining Analysis
-- Model Optimization
-RAVEN provides a set of basic and advanced capabilities that ranges from data generation, data processing and data visualization.
-
-- 🔭 I’m currently working on this page. 
-
 
 [<img src='https://cdn.jsdelivr.net/npm/simple-icons@3.0.1/icons/github.svg' alt='github' height='40'>](https://github.com/raven)  
 
@@ -148,9 +130,7 @@ RAVEN provides a set of basic and advanced capabilities that ranges from data ge
 
 ![GitHub streak stats](https://github-readme-streak-stats.herokuapp.com/?user=raven)  
 
-![Profile views](https://gpvc.arturio.dev/raven)    
-
-
+![Profile views](https://gpvc.arturio.dev/raven)      
 
 
 ### License
