@@ -43,6 +43,7 @@ def invLinear(rlz,**kwargs):
           b, float, linear coefficient for the penalty measure. (default = 1.0)
     @ Out, fitness, float, the fitness function of the given objective corresponding to a specific chromosome.
   """
+  
   if kwargs['a'] == None:
     a = 1.0
   else:
@@ -57,8 +58,9 @@ def invLinear(rlz,**kwargs):
     penalty = kwargs['penalty']
 
   objVar = kwargs['objVar']
-  print(rlz)
+
   fitness = 1.0/(a * rlz[objVar] + b * penalty)
+
   return fitness
 
 
@@ -96,10 +98,23 @@ def logistic(rlz,**kwargs):
 
   return fitness
 
+def crowdingDist(rlz,**kwargs):
+  """
+    Crowding distance based fitness method
+    Refer to framework/utils/mathUtils.py for the actual implementation of the Crowding distance
+    @ In, rlz, xr.Dataset, containing the evaluation of a certain set of individuals 
+                           (can be the initial population for the very first iteration,
+                           or a population of offsprings)
+    @ In, kwargs, dict, dictionary of parameters for this fitness method:
+          objVar, string, the name of the objective variable
+    @ Out, fitness, float, the fitness function of the given objective corresponding to a specific chromosome.
+  """  
+  pass
 
 __fitness = {}
-__fitness['invLinear'] = invLinear
-__fitness['logistic']  = logistic
+__fitness['invLinear']    = invLinear
+__fitness['logistic']     = logistic
+__fitness['crowdingDist'] = crowdingDist
 
 
 def returnInstance(cls, name):

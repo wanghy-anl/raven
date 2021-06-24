@@ -2,15 +2,15 @@
 <Simulation verbosity="debug">
   <RunInfo>
     <WorkingDir>MO_base</WorkingDir>
-    <!--Sequence>optimize, print</Sequence-->
-    <Sequence>MCsampler</Sequence>
+    <Sequence>optimize, print</Sequence>
+    <!--Sequence>MCsampler</Sequence-->
     <batchSize>1</batchSize>
   </RunInfo>
 
   <Samplers>
     <MonteCarlo name="MC_samp">
       <samplerInit>
-        <limit>1000</limit>
+        <limit>10</limit>
         <initialSeed>20021986</initialSeed>
       </samplerInit>
       <variable name="x1">
@@ -87,12 +87,12 @@
         <objective>-1</objective>
       </convergence>
 
-      <variable name="x">
-        <distribution>dist_x</distribution>
+      <variable name="x1">
+        <distribution>dist_x1</distribution>
       </variable>
 
-      <variable name="y">
-        <distribution>dist_y</distribution>
+      <variable name="x2">
+        <distribution>dist_x2</distribution>
       </variable>
 
       <objective>ans1,ans2</objective>

@@ -126,9 +126,47 @@ def fitnessBased(newRlz,**kwargs):
 
   return newPopulationArray,newFitness,newAge
 
+# @profile
+def crowDistAndRankBased(newRlz,**kwargs):
+  """
+    Crowding distance and rank based survivorSelection mechanism for new generation selection.
+    This is designed for multi-objective optimization
+    It combines the parents and children/offsprings and then keeps the individuals with higher rank and crowding distance
+    @ In, newRlz, xr.DataSet, containing either a single realization, or a batch of realizations.
+    @ In, kwargs, dict, dictionary of parameters for this mutation method:
+          offSpringsFitness, xr.DataArray, fitness of each new child,
+          offSpringsFitness, xr.DataArray, fitness of each new child
+          population
+    @ Out, newPopulation, xr.DataArray, newPopulation for the new generation, i.e. np.shape(newPopulation) = populationSize x nGenes.
+    @ Out, newFitness, xr.DataArray, fitness of the new population
+    @ Out, newAge, list, Ages of each chromosome in the new population.
+  """
+  
+  '''
+  rankIndex = 1
+  currentSelectedPop = Empty xarray
+  currentPopulation = population + rlz
+  while True
+    Fn = currentPopulation with rank = rankIndex
+    if size(Fn)+size(currentSelectedPop) < DesiredNumber
+      append Fn to currentSelectedPop
+      remove Fn from currentPopulation
+      rankIndex++ 
+    else
+      sort Fn by crowding distance
+      numberOfElementsToBeSelected = DesiredNumber - size(currentSelectedPop)
+      F_last = first numberOfElementsToBeSelected from Fn
+      append F_last to currentSelectedPop
+      break
+  
+  return currentSelectedPop,newFitness,newAge
+  '''
+  pass
+
 __survivorSelectors = {}
 __survivorSelectors['ageBased'] = ageBased
 __survivorSelectors['fitnessBased'] = fitnessBased
+__survivorSelectors['crowDistAndRankBased'] = crowDistAndRankBased
 
 def returnInstance(cls, name):
   """
