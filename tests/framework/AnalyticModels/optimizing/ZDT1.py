@@ -24,8 +24,7 @@ def evaluate(x):
   """
     Evaluates ZDT1 function.
     @ In, x, float, value
-    @ In, y, float, value
-    @ Out, evaluate, value at x, y
+    @ Out, evaluate, value at x
   """
   dim = len(x)
   f1 = x[0]
@@ -61,7 +60,12 @@ def run(self,Inputs):
     @ In, Inputs, dict, additional inputs
     @ Out, None
   """
-  objectives = evaluate(self.x)
+  dim = len(Inputs.keys())
+  inputData = list(Inputs.values())
+  dataArray = np.array(inputData).reshape(1,dim)[0]
+
+  objectives = evaluate(dataArray)
+  
   self.ans1 = objectives[0]
   self.ans2 = objectives[1]
 

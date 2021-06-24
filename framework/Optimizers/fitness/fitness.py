@@ -57,6 +57,7 @@ def invLinear(rlz,**kwargs):
     penalty = kwargs['penalty']
 
   objVar = kwargs['objVar']
+  print(rlz)
   fitness = 1.0/(a * rlz[objVar] + b * penalty)
   return fitness
 
