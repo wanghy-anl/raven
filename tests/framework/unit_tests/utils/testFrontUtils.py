@@ -152,7 +152,9 @@ indexes2D = frontUtils.nonDominatedFrontier(test2D, returnMask=False, minMask=np
 answerIndexes = np.array([0, 16, 34, 47, 49])
 checkArray('2D nonDominatedFrontier MinMask with indexes', indexes2D.tolist(), answerIndexes.tolist())
 
-
+indexRanks = frontUtils.rankNonDominatedFrontiers(test2D)
+answerIndexRanks = np.array([1, 2, 3, 4, 4, 6, 5, 8, 9, 6, 9, 7, 8, 10, 2, 3, 1, 10, 9, 11, 12, 10, 7, 10, 4, 9, 5, 11, 8, 7, 6, 9, 7, 8, 1, 8, 8, 8, 9, 8, 6, 7, 8, 2, 7, 5, 3, 1, 2, 1])
+checkArray('2D rank Non-Dominated Frontiers', indexRanks, answerIndexRanks.tolist())
 
 print(results)
 

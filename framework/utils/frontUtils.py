@@ -71,7 +71,7 @@ def nonDominatedFrontier(data, returnMask, minMask=None):
 
 def rankNonDominatedFrontiers(data):
   """
-    This method ranks the non dominated fronts by omitting thr first front from the data
+    This method ranks the non dominated fronts by omitting the first front from the data
     and searching the remaining data for a new one recursively.
     @ In, data, np.array, data matrix (nPoints, nObjectives) containing the multi-objective
                           evaluations of each point/individual, element (i,j)

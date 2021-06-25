@@ -145,11 +145,15 @@ def crowDistAndRankBased(newRlz,**kwargs):
   currentSelectedPop = Empty xarray
   currentPopulation = population + rlz
   
+  rankIndeces = rankNonDominatedFrontiers(currentPopulation)
+  
+  rankIndex = 1
+  
   while True
-    Fn = pareto frontier from currentPopulation 
+    Fn = pareto frontier of rank>=rankIndex
     if size(Fn)+size(currentSelectedPop) < DesiredNumber
       append Fn to currentSelectedPop
-      remove Fn from currentPopulation
+      rankIndex++
     else
       sort Fn by crowding distance
       numberOfElementsToBeSelected = DesiredNumber - size(currentSelectedPop)
