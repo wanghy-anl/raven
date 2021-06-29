@@ -86,12 +86,17 @@ def rankNonDominatedFrontiers(data):
   rawData = data
   while np.shape(data)[0] > 0:
     rank += 1
-    indicesNonDominated = list(nonDominatedFrontier(data, False))
+    indicesNonDominated = list(nonDominatedFrontier(data, returnMask=False))
     if rank > 1:
       for i in range(len(indicesNonDominated)):
         indicesNonDominated[i] = indicesDominated[indicesNonDominated[i]]
     indicesDominated = list(set(indicesDominated)-set(indicesNonDominated))
     data = rawData[indicesDominated]
     nonDominatedRank[indicesNonDominated] = rank
-  nonDominatedRank = list(nonDominatedRank)
-  return nonDominatedRank
+  nonDominatedRankList = list(nonDominatedRank)
+  
+  #import matplotlib.pyplot as plt
+  #plt.scatter(rawData[:,0], rawData[:,1], c=nonDominatedRank, cmap='jet') 
+  #plt.show()
+  
+  return nonDominatedRankList

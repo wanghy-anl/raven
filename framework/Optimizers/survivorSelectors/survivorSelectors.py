@@ -25,6 +25,8 @@
 import numpy as np
 import xarray as xr
 
+from utils import frontUtils
+
 # @profile
 def ageBased(newRlz,**kwargs):
   """
@@ -134,23 +136,110 @@ def crowDistAndRankBased(newRlz,**kwargs):
     @ In, newRlz, xr.DataSet, containing either a single realization, or a batch of realizations.
     @ In, kwargs, dict, dictionary of parameters for this mutation method:
           offSpringsFitness, xr.DataArray, fitness of each new child,
-          offSpringsFitness, xr.DataArray, fitness of each new child
-          population
+          populationFitness, xr.DataArray, fitness of each element of the current population
+          
     @ Out, newPopulation, xr.DataArray, newPopulation for the new generation, i.e. np.shape(newPopulation) = populationSize x nGenes.
     @ Out, newFitness, xr.DataArray, fitness of the new population
     @ Out, newAge, list, Ages of each chromosome in the new population.
   """
+  print(kwargs)
+  popSize = np.shape(kwargs['population'])[0]
+  if ('age' not in kwargs.keys() or kwargs['age'] == None):
+    popAge = [0]*popSize
+  else:
+    popAge = kwargs['age']
+
+  offSpringsFitness = np.atleast_1d(kwargs['offSpringsFitness'])
+  offSpringsObjVals = kwargs['offSpringsObjVals']
+  offSprings = np.atleast_2d(newRlz[kwargs['variables']].to_array().transpose().data)
   
+  population = np.atleast_2d(kwargs['population'].data)
+  populationObjVals = kwargs['populationObjVals']
+  populationFitness = np.atleast_1d(kwargs['populationFitness'].data)
+    
+  currentPopulation= np.concatenate([population,offSprings])
+  currentPopulationFitness = np.concatenate([populationFitness,offSpringsFitness])
+  currentPopulationObjVals = np.concatenate([offSpringsObjVals,populationObjVals])
+  #currentAge = list(map(lambda x:x+1, popAge))
+  #currentAge.extend([0]*len(offSpringsFitness))
+
+  rankIndexes = np.array(frontUtils.rankNonDominatedFrontiers(currentPopulationObjVals))
+  rankIndex = 1
+  newPopulationSize = 0
+  requiredPopulationSize = np.shape(kwargs['population'])[0]
+  
+  newPopulation        = None
+  newPopulationFitness = None
+  newPopulationObjVals = None
+  
+  while True:
+    # selectedFrontIndeces = Fn = Pareto frontier of rank=rankIndex
+    selectedFrontIndexes = np.where(rankIndexes==rankIndex)
+    # Determine new Front  
+    frontNPopulation = currentPopulation[selectedFrontIndexes]
+    frontNFitness    = currentPopulationFitness[selectedFrontIndexes]
+    frontNObjVals    = currentPopulationObjVals[selectedFrontIndexes]
+    frontCardinality = (frontNPopulation).shape[0]
+    
+    candidatePopulationSize = newPopulationSize + frontCardinality
+    
+    if candidatePopulationSize < requiredPopulationSize:
+      # append population with rank=rankIndex
+      if newPopulation is None:
+        newPopulation        = frontNPopulation
+        newPopulationFitness = frontNFitness
+        newPopulationObjVals = frontNObjVals
+      else:
+        newPopulation        = np.concatenate([newPopulation,frontNPopulation])
+        newPopulationFitness = np.concatenate([newPopulationFitness,frontNFitness])
+        newPopulationObjVals = np.concatenate([newPopulationObjVals,frontNObjVals])
+      
+      #currentPopulation        = np.delete(currentPopulation, selectedFrontIndexes)
+      #currentPopulationFitness = np.delete(currentPopulationFitness, selectedFrontIndexes)
+      #currentPopulationObjVals = np.delete(currentPopulationObjVals, selectedFrontIndexes)
+      
+      newPopulationSize = newPopulationSize + frontCardinality
+    else:
+      toBeSelected = requiredPopulationSize - candidatePopulationSize
+      # rank Fn with decreasing crowding distance
+      # https://stackoverflow.com/questions/10337533/a-fast-way-to-find-the-largest-n-elements-in-an-numpy-array
+      temp = np.argpartition(-frontNFitness, toBeSelected)
+      indexesToBeSelected = temp[:toBeSelected]
+      
+      # select first toBeSelected elements
+      frontNPopulation = currentPopulation[indexesToBeSelected]
+      frontNFitness    = currentPopulationFitness[indexesToBeSelected]
+      frontNObjVals    = currentPopulationObjVals[indexesToBeSelected]
+      
+      # update newPopulation
+      newPopulation        = np.concatenate([newPopulation,frontNPopulation])
+      newPopulationFitness = np.concatenate([newPopulationFitness,frontNFitness])
+      newPopulationObjVals = np.concatenate([newPopulationObjVals,frontNObjVals])
+      
+      break
+    
+    rankIndex = rankIndex + 1
+    
+  newPopulationArray = xr.DataArray(newPopulation,
+                                    dims=['chromosome','Gene'],
+                                    coords={'chromosome':np.arange(np.shape(newPopulation)[0]),
+                                            'Gene': kwargs['variables']})   
+
+  newFitness = xr.DataArray(newPopulationFitness,
+                            dims=['chromosome'],
+                            coords={'chromosome':np.arange(np.shape(newPopulationFitness)[0])})
+
+  return newPopulationArray,newFitness
+ 
   '''
-  currentSelectedPop = Empty xarray
   currentPopulation = population + rlz
   
-  rankIndeces = rankNonDominatedFrontiers(currentPopulation)
+  rankIndeces = frontUtils.rankNonDominatedFrontiers(currentPopulation.values)
   
   rankIndex = 1
   
-  while True
-    Fn = pareto frontier of rank>=rankIndex
+  while True:
+    Fn = pareto frontier of rank=rankIndex
     if size(Fn)+size(currentSelectedPop) < DesiredNumber
       append Fn to currentSelectedPop
       rankIndex++
@@ -163,7 +252,7 @@ def crowDistAndRankBased(newRlz,**kwargs):
   
   return currentSelectedPop,newFitness,newAge
   '''
-  pass
+
 
 __survivorSelectors = {}
 __survivorSelectors['ageBased'] = ageBased

@@ -109,7 +109,13 @@ def crowdingDist(rlz,**kwargs):
           objVar, string, the name of the objective variable
     @ Out, fitness, float, the fitness function of the given objective corresponding to a specific chromosome.
   """  
-  pass
+  #print(rlz)
+  
+  objVars = kwargs['objVar'].split(',')
+
+  fitness = rlz[objVars[0]] + rlz[objVars[1]]
+  
+  return fitness
 
 __fitness = {}
 __fitness['invLinear']    = invLinear

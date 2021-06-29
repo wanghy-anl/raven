@@ -11,6 +11,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+
 """
   Genetic Algorithm class for global optimization.
   This class contains the API and interface for performing
@@ -405,22 +406,39 @@ class GeneticAlgorithm(RavenSampled):
     # 5.1 @ n-1: fitnessCalculation(rlz)
     # perform fitness calculation for newly obtained children (rlz)
     fitness = self._fitnessInstance(rlz, objVar=self._objectiveVar, a=self._objCoeff, b=self._penaltyCoeff, penalty=None)
-    objectiveVal = list(np.atleast_1d(rlz[self._objectiveVar].data))
-    acceptable = 'first' if self.counter==1 else 'accepted'
-    population = self._datasetToDataArray(rlz) # TODO: rename
-    self._collectOptPoint(population,fitness,objectiveVal)
-    self._resolveNewGeneration(traj, rlz, objectiveVal, fitness, info)
-
+    
+    population,popObjVals = self._datasetToDataArray(rlz) 
+    
+    if len(self._objectiveVar.split(','))==1:
+      multiObjectiveMode = True 
+    else:
+      multiObjectiveMode = False
+      
+    if multiObjectiveMode:
+      objectiveVal = list(np.atleast_1d(rlz[self._objectiveVar].data))
+      acceptable = 'first' if self.counter==1 else 'accepted'
+      self._collectOptPoint(population,fitness,objectiveVal)
+      self._resolveNewGeneration(traj, rlz, objectiveVal, fitness, info)
+     
     if self._activeTraj:
       # 5.2@ n-1: Survivor selection(rlz)
       # update population container given obtained children
       if self.counter > 1:
-        population,fitness,age = self._survivorSelectionInstance(age=self.popAge, variables=list(self.toBeSampled), population=self.population, fitness=self.fitness, newRlz=rlz,offSpringsFitness=fitness)
+        population,fitness,age,objVals = self._survivorSelectionInstance(age=self.popAge, 
+                                                                         variables=list(self.toBeSampled), 
+                                                                         population=self.population, 
+                                                                         populationObjVals=self.objVals,
+                                                                         populationFitness=self.fitness, 
+                                                                         newRlz=rlz,
+                                                                         offSpringsObjVals=popObjVals,  
+                                                                         offSpringsFitness=fitness)
         self.popAge = age
         self.population = population
+        self.objVals = objVals
       else:
         self.population = population
-      self.objectiveVal = rlz[self._objectiveVar].data
+        self.objVals = popObjVals
+      #self.objectiveVal = rlz[self._objectiveVar].data
       self.fitness = fitness
 
       # 1 @ n: Parent selection from population
@@ -492,9 +510,15 @@ class GeneticAlgorithm(RavenSampled):
     """
     dataset = xr.DataArray(np.atleast_2d(rlzDataset[list(self.toBeSampled)].to_array().transpose()),
                               dims=['chromosome','Gene'],
-                              coords={'chromosome': np.arange(rlzDataset[self._objectiveVar].data.size),
+                              coords={'chromosome': np.arange(rlzDataset[self._objectiveVar.split(',')[0]].data.size),
                                       'Gene':list(self.toBeSampled)})
-    return dataset
+    
+    objValdataset = xr.DataArray(np.atleast_2d(rlzDataset[self._objectiveVar.split(',')].to_array().transpose()),
+                                 dims=['chromosome','objVar'],
+                                 coords={'chromosome': np.arange(rlzDataset[self._objectiveVar.split(',')[0]].data.size),
+                                         'objVar':list(self.toBeSampled)})
+  
+    return dataset,objValdataset
 
   def _submitRun(self, point, traj, step, moreInfo=None):
     """
