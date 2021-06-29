@@ -229,30 +229,8 @@ def crowDistAndRankBased(newRlz,**kwargs):
                             dims=['chromosome'],
                             coords={'chromosome':np.arange(np.shape(newPopulationFitness)[0])})
 
-  return newPopulationArray,newFitness
+  return newPopulationArray,newFitness,popAge,newPopulationObjVals
  
-  '''
-  currentPopulation = population + rlz
-  
-  rankIndeces = frontUtils.rankNonDominatedFrontiers(currentPopulation.values)
-  
-  rankIndex = 1
-  
-  while True:
-    Fn = pareto frontier of rank=rankIndex
-    if size(Fn)+size(currentSelectedPop) < DesiredNumber
-      append Fn to currentSelectedPop
-      rankIndex++
-    else
-      sort Fn by crowding distance
-      numberOfElementsToBeSelected = DesiredNumber - size(currentSelectedPop)
-      F_last = first numberOfElementsToBeSelected from Fn
-      append F_last to currentSelectedPop
-      break
-  
-  return currentSelectedPop,newFitness,newAge
-  '''
-
 
 __survivorSelectors = {}
 __survivorSelectors['ageBased'] = ageBased
