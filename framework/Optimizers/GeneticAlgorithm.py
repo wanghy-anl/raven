@@ -405,7 +405,12 @@ class GeneticAlgorithm(RavenSampled):
 
     # 5.1 @ n-1: fitnessCalculation(rlz)
     # perform fitness calculation for newly obtained children (rlz)
-    fitness = self._fitnessInstance(rlz, objVar=self._objectiveVar, a=self._objCoeff, b=self._penaltyCoeff, penalty=None)
+    fitness = self._fitnessInstance(rlz, 
+                                    objVar=self._objectiveVar, 
+                                    a=self._objCoeff, 
+                                    b=self._penaltyCoeff, 
+                                    penalty=None,
+                                    population=self.population)
     
     population,popObjVals = self._datasetToDataArray(rlz) 
     
