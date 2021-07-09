@@ -410,14 +410,14 @@ class GeneticAlgorithm(RavenSampled):
                                     a=self._objCoeff, 
                                     b=self._penaltyCoeff, 
                                     penalty=None,
-                                    population=self.population)
+                                    population=self.population) # Added for MOGA
     
     population,popObjVals = self._datasetToDataArray(rlz) 
     
     if len(self._objectiveVar.split(','))==1:
-      multiObjectiveMode = True 
+      multiObjectiveMode = False 
     else:
-      multiObjectiveMode = False
+      multiObjectiveMode = True
       
     if multiObjectiveMode:
       objectiveVal = list(np.atleast_1d(rlz[self._objectiveVar].data))
@@ -435,8 +435,9 @@ class GeneticAlgorithm(RavenSampled):
                                                                          populationObjVals=self.objVals,
                                                                          populationFitness=self.fitness, 
                                                                          newRlz=rlz,
-                                                                         offSpringsObjVals=popObjVals,  
-                                                                         offSpringsFitness=fitness)
+                                                                         offSpringsFitness=fitness,
+                                                                         offSpringsObjVals=popObjVals)  # Added for MOGA
+                                                                         
         self.popAge = age
         self.population = population
         self.objVals = objVals

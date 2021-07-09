@@ -21,6 +21,7 @@
 # External Imports
 import numpy as np
 # Internal Imports
+from utils import frontUtils
 
 # [MANDD] Note: the fitness function are bounded by 2 parameters: a and b
 #               We should make this method flexible to accept different set of params
@@ -98,9 +99,9 @@ def logistic(rlz,**kwargs):
 
   return fitness
 
-def crowdingDist(rlz,**kwargs):
+def paretoFrontRank(rlz,**kwargs):
   """
-    Crowding distance based fitness method
+    Fitness method based on Pareto frontier rank
     Refer to framework/utils/mathUtils.py for the actual implementation of the Crowding distance
     @ In, rlz, xr.Dataset, containing the evaluation of a certain set of individuals 
                            (can be the initial population for the very first iteration,
@@ -112,15 +113,17 @@ def crowdingDist(rlz,**kwargs):
   #print(rlz)
   
   objVars = kwargs['objVar'].split(',')
-
-  fitness = rlz[objVars[0]] + rlz[objVars[1]]
+  # fitness = rlz[objVars[0]] + rlz[objVars[1]]
+  objectiveData = rlz[objVars]
+  
+  fitness = frontUtils.rankNonDominatedFrontiers(objectiveData)
   
   return fitness
 
 __fitness = {}
-__fitness['invLinear']    = invLinear
-__fitness['logistic']     = logistic
-__fitness['crowdingDist'] = crowdingDist
+__fitness['invLinear']       = invLinear
+__fitness['logistic']        = logistic
+__fitness['paretoFrontRank'] = paretoFrontRank
 
 
 def returnInstance(cls, name):
