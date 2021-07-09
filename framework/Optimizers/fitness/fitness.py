@@ -102,22 +102,23 @@ def logistic(rlz,**kwargs):
 def paretoFrontRank(rlz,**kwargs):
   """
     Fitness method based on Pareto frontier rank
-    Refer to framework/utils/mathUtils.py for the actual implementation of the Crowding distance
+    Refer to framework/utils/frontUtils.py for the actual implementation of the Pareto frontier 
     @ In, rlz, xr.Dataset, containing the evaluation of a certain set of individuals 
                            (can be the initial population for the very first iteration,
                            or a population of offsprings)
     @ In, kwargs, dict, dictionary of parameters for this fitness method:
           objVar, string, the name of the objective variable
     @ Out, fitness, float, the fitness function of the given objective corresponding to a specific chromosome.
-  """  
-  #print(rlz)
-  
-  objVars = kwargs['objVar'].split(',')
-  # fitness = rlz[objVars[0]] + rlz[objVars[1]]
-  objectiveData = rlz[objVars]
-  
-  fitness = frontUtils.rankNonDominatedFrontiers(objectiveData)
-  
+  """
+  if kwargs['population'] is None:
+    objVars = kwargs['objVar'].split(',')
+    objectiveData = rlz[objVars]
+    print(objectiveData.to_array().values.transpose())
+    fitness = frontUtils.rankNonDominatedFrontiers(objectiveData.to_array().values.transpose())
+    print(fitness)
+  else:
+    # merge 
+    pass
   return fitness
 
 __fitness = {}

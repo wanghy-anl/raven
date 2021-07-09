@@ -76,7 +76,7 @@
             <mutationProb>0.9</mutationProb>
           </mutation>
         </reproduction>
-        <fitness type="crowdingDist">
+        <fitness type="paretoFrontRank">
           <a>2.0</a>
           <b>1.0</b>
         </fitness>
