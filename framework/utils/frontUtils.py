@@ -118,4 +118,4 @@ def crowdingDistance(rank, popSize, objectives):
       for i in range(1, len(front)-1):
         crowdDist[front[sortedRank[i]]] = crowdDist[front[sortedRank[i]]] + (objectives[front[sortedRank[i+1]], obj] - objectives[front[sortedRank[i-1]], obj]) / (fMax[obj]-fMin[obj])
   return crowdDist
->>>>>>> origin/devel
+
