@@ -156,6 +156,36 @@ indexRanks = frontUtils.rankNonDominatedFrontiers(test2D)
 answerIndexRanks = np.array([1, 2, 3, 4, 4, 6, 5, 8, 9, 6, 9, 7, 8, 10, 2, 3, 1, 10, 9, 11, 12, 10, 7, 10, 4, 9, 5, 11, 8, 7, 6, 9, 7, 8, 1, 8, 8, 8, 9, 8, 6, 7, 8, 2, 7, 5, 3, 1, 2, 1])
 checkArray('2D rank Non-Dominated Frontiers', indexRanks, answerIndexRanks.tolist())
 
+## Testing crowding distances
+# test1: 2 objective functions
+testCDarray = np.array([[12, 0],
+                       [11.5, 0.5],
+                       [11, 1],
+                       [10.8, 1.2],
+                       [10.5, 1.5],
+                       [10.3, 1.8],
+                       [9.5, 2],
+                       [9, 2.5],
+                       [7, 3],
+                       [5, 4],
+                       [2.5, 6],
+                       [2, 10],
+                       [1.5, 11],
+                       [1, 11.5],
+                       [0.8, 11.7],
+                       [0, 12]])
+
+rankCDSingleFront = frontUtils.rankNonDominatedFrontiers(testCDarray)
+indexesCD2D = frontUtils.crowdingDistance(rank=rankCDSingleFront, popSize=len(rankCDSingleFront), objectives=testCDarray)
+answerIndexesCD2D = np.array([np.inf,0.16666667,0.11666667,0.08333333,0.09166667,0.125,0.16666667,0.29166667,0.45833333,0.625,0.75,0.5,0.20833333,0.11666667,0.125,np.inf])
+checkArray('2D crowding distance', indexesCD2D.tolist(), answerIndexesCD2D.tolist())
+
+# test2: 3 objective functions
+rank3D = frontUtils.rankNonDominatedFrontiers(test3D)
+indexesCD3D = frontUtils.crowdingDistance(rank=rank3D, popSize=len(rank3D), objectives=test3D)
+answerIndexesCD3D = np.array([np.inf, np.inf, 1.06417083, np.inf, np.inf,0.56135102, np.inf, np.inf, np.inf,np.inf])
+checkArray('3D crowding distance', indexesCD3D.tolist(), answerIndexesCD3D.tolist())
+
 print(results)
 
 sys.exit(results["fail"])

@@ -72,7 +72,7 @@ def ageBased(newRlz,**kwargs):
   newFitness = xr.DataArray(newFitness,
                                dims=['chromosome'],
                                coords={'chromosome':np.arange(np.shape(newFitness)[0])})
-  return newPopulation,newFitness,newAge
+  return newPopulation,newFitness,newAge,kwargs['popObjectiveVal']
 
 
 # @profile
@@ -125,7 +125,7 @@ def fitnessBased(newRlz,**kwargs):
                             dims=['chromosome'],
                             coords={'chromosome':np.arange(np.shape(newFitness)[0])})
 
-  return newPopulationArray,newFitness,newAge
+  return newPopulationArray,newFitness,newAge,kwargs['popObjectiveVal']
 
 # @profile
 def crowDistAndRankBased(newRlz,**kwargs):
