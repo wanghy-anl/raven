@@ -23,9 +23,9 @@ from .Optimizer import Optimizer
 from .RavenSampled import RavenSampled
 from .GradientDescent import GradientDescent
 from .SimulatedAnnealing import SimulatedAnnealing
-from framework.Optimizers import GeneticAlgorithm_MO_edits
+from .GeneticAlgorithm import GeneticAlgorithm
 
 factory = EntityFactory('Optimizer')
 factory.registerType('GradientDescent', GradientDescent)
 factory.registerType('SimulatedAnnealing', SimulatedAnnealing)
-factory.registerType('GeneticAlgorithm_MO_edits', GeneticAlgorithm_MO_edits)
+factory.registerType('GeneticAlgorithm', GeneticAlgorithm)

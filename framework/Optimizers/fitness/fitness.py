@@ -170,17 +170,12 @@ def paretoFrontRank(rlz,**kwargs):
     @ In, kwargs, dict, dictionary of parameters for this fitness method:
           objVar, string, the name of the objective variable
     @ Out, fitness, float, the fitness function of the given objective corresponding to a specific chromosome.
-  """
-  if kwargs['population'] is None:
-    objVars = kwargs['objVar'].split(',')
-    objectiveData = rlz[objVars]
-    print(objectiveData.to_array().values.transpose())
-    fitness = frontUtils.rankNonDominatedFrontiers(objectiveData.to_array().values.transpose())
-    print(fitness)
-  else:
-    # merge 
-    pass
-  return fitness
+ 
+  """  
+  objVars = kwargs['objVar'].split(',')
+  objectiveData = rlz[objVars]
+  fitness = frontUtils.rankNonDominatedFrontiers(objectiveData.to_array().values.transpose())
+  return np.array(fitness)
 
 __fitness = {}
 __fitness['invLinear'] = invLinear

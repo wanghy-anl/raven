@@ -11,7 +11,6 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
 """
   Genetic Algorithm class for global optimization.
   This class contains the API and interface for performing
@@ -416,9 +415,16 @@ class GeneticAlgorithm(RavenSampled):
 
     # 5.1 @ n-1: fitnessCalculation(rlz)
     # perform fitness calculation for newly obtained children (rlz)
-
+      
     offSprings = datasetToDataArray(rlz, list(self.toBeSampled))
-    objectiveVal = list(np.atleast_1d(rlz[self._objectiveVar].data))
+    
+    if len(self._objectiveVar.split(','))==1:
+      self.multiObjectiveMode = False 
+      offSpringsObjectiveVal = list(np.atleast_1d(rlz[self._objectiveVar].values))
+    else:
+      self.multiObjectiveMode = True
+      offSpringsObjectiveVal = list(np.atleast_1d(rlz[self._objectiveVar.split(',')].values))
+    
     # Compute constraint function g_j(x) for all constraints (j = 1 .. J)
     # and all x's (individuals) in the population
     g0 = np.zeros((np.shape(offSprings)[0],len(self._constraintFunctions)+len(self._impConstraintFunctions)))
@@ -431,58 +437,48 @@ class GeneticAlgorithm(RavenSampled):
     #        there are many utility functions that can be simplified and/or merged with
     #        _check, _handle, and _apply, for explicit and implicit constraints.
     #        This can be simplified in the near future in GradientDescent, SimulatedAnnealing, and here in GA
-    for index,individual in enumerate(offSprings):
-      newOpt = individual
-      opt = objectiveVal[index]
-      for constIndex,constraint in enumerate(self._constraintFunctions + self._impConstraintFunctions):
-        if constraint in self._constraintFunctions:
-          g.data[index, constIndex] = self._handleExplicitConstraints(newOpt,constraint)
-        else:
-          g.data[index, constIndex] = self._handleImplicitConstraints(newOpt, opt,constraint)
+    
+    if not self.multiObjectiveMode:
+      for index,individual in enumerate(offSprings):
+        newOpt = individual
+        opt = offSpringsObjectiveVal[index]
+        for constIndex,constraint in enumerate(self._constraintFunctions + self._impConstraintFunctions):
+          if constraint in self._constraintFunctions:
+            g.data[index, constIndex] = self._handleExplicitConstraints(newOpt,constraint)
+          else:
+            g.data[index, constIndex] = self._handleImplicitConstraints(newOpt, opt,constraint)
 
     offSpringFitness = self._fitnessInstance(rlz,
                                              objVar = self._objectiveVar,
                                              a = self._objCoeff,
                                              b = self._penaltyCoeff,
                                              penalty = None,
-                                             constraintFunction=g,
-                                             type=self._minMax)
-    
-    population,popObjVals = self._datasetToDataArray(rlz) 
-    
-    if len(self._objectiveVar.split(','))==1:
-      multiObjectiveMode = False 
-    else:
-      multiObjectiveMode = True
-      
-    if multiObjectiveMode:
-      objectiveVal = list(np.atleast_1d(rlz[self._objectiveVar].data))
-      acceptable = 'first' if self.counter==1 else 'accepted'
-      self._collectOptPoint(population,offSpringFitness,objectiveVal)
-      self._resolveNewGeneration(traj, rlz, objectiveVal, offSpringFitness, info)
+                                             constraintFunction = g,
+                                             type = self._minMax)
 
-    acceptable = 'first' if self.counter==1 else 'accepted'
-
-    self._collectOptPoint(offSprings, offSpringFitness, objectiveVal)
-    self._resolveNewGeneration(traj, rlz, objectiveVal, offSpringFitness, info)
+    if not self.multiObjectiveMode:
+      self._collectOptPoint(offSprings, offSpringFitness, offSpringsObjectiveVal)
+      self._resolveNewGeneration(traj, rlz, offSpringsObjectiveVal, offSpringFitness, info)
 
     if self._activeTraj:
       # 5.2@ n-1: Survivor selection(rlz)
       # update population container given obtained children
       if self.counter > 1:
-        self.population,self.fitness,age,self.objectiveVal = self._survivorSelectionInstance(age = self.popAge,
-                                                                                             variables = list(self.toBeSampled),
-                                                                                             population = self.population,
-                                                                                             fitness = self.fitness,
-                                                                                             newRlz = rlz,
-                                                                                             offSpringsFitness = offSpringFitness,
-                                                                                             popObjectiveVal = self.objectiveVal)
-        self.popAge = age
-        self.population = population
+        self.population,self.fitness,self.popAge,self.objectiveVal = self._survivorSelectionInstance(age = self.popAge,
+                                                                                                     variables = list(self.toBeSampled),
+                                                                                                     population = self.population,
+                                                                                                     populationFitness = self.fitness,
+                                                                                                     popObjectiveVals = self.objectiveVal,
+                                                                                                     newRlz = rlz,
+                                                                                                     offSpringsFitness = offSpringFitness,
+                                                                                                     offSpringsObjVals = offSpringsObjectiveVal)
       else:
-        self.population = offSprings
-        self.fitness = offSpringFitness
-        self.objectiveVal = rlz[self._objectiveVar].data
+        self.population   = offSprings
+        self.fitness      = offSpringFitness
+        if not self.multiObjectiveMode:
+          self.objectiveVal = list(np.atleast_1d(rlz[self._objectiveVar].values))
+        else:
+          self.objectiveVal = list(np.atleast_1d(rlz[self._objectiveVar.split(',')].values))        
 
       # 1 @ n: Parent selection from population
       # pair parents together by indexes
@@ -551,27 +547,6 @@ class GeneticAlgorithm(RavenSampled):
         for _,var in enumerate(self.toBeSampled.keys()):
           newRlz[var] = float(daChildren.loc[i,var].values)
         self._submitRun(newRlz, traj, self.getIteration(traj))
-
-  def _datasetToDataArray(self,rlzDataset):
-    """
-      Converts the realization DataSet to a DataArray
-      @ In, rlzDataset, xr.dataset, the data set containing the batched realizations
-      @ Out, dataset, xr.dataarray, a data array containing the realization with
-                     dims = ['chromosome','Gene']
-                     chromosomes are named 0,1,2...
-                     Genes are named after variables to be sampled
-    """
-    dataset = xr.DataArray(np.atleast_2d(rlzDataset[list(self.toBeSampled)].to_array().transpose()),
-                              dims=['chromosome','Gene'],
-                              coords={'chromosome': np.arange(rlzDataset[self._objectiveVar.split(',')[0]].data.size),
-                                      'Gene':list(self.toBeSampled)})
-    
-    objValdataset = xr.DataArray(np.atleast_2d(rlzDataset[self._objectiveVar.split(',')].to_array().transpose()),
-                                 dims=['chromosome','objVar'],
-                                 coords={'chromosome': np.arange(rlzDataset[self._objectiveVar.split(',')[0]].data.size),
-                                         'objVar':list(self.toBeSampled)})
-  
-    return dataset,objValdataset
 
   def _submitRun(self, point, traj, step, moreInfo=None):
     """

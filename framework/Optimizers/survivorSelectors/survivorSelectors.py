@@ -54,7 +54,7 @@ def ageBased(newRlz,**kwargs):
                             coords={'chromosome':np.arange(np.shape(np.atleast_2d(newRlz[kwargs['variables']].to_array().transpose()))[0]),
                                     'Gene': kwargs['variables']})
   population = np.atleast_2d(kwargs['population'].data)
-  popFitness = np.atleast_1d(kwargs['fitness'].data)
+  popFitness = np.atleast_1d(kwargs['populationFitness'].data)
   # sort population, popFitness according to age
   sortedAge,sortedPopulation,sortedFitness = zip(*[[x,y,z] for x,y,z in sorted(zip(popAge,population,popFitness),key=lambda x: (x[0], -x[2]))])# if equal age then use descending fitness
   sortedAge,sortedPopulation,sortedFitness = list(sortedAge),np.atleast_1d(list(sortedPopulation)),np.atleast_1d(list(sortedFitness))
@@ -101,7 +101,7 @@ def fitnessBased(newRlz,**kwargs):
   offSpringsFitness = np.atleast_1d(kwargs['offSpringsFitness'])
   offSprings = np.atleast_2d(newRlz[kwargs['variables']].to_array().transpose().data)
   population = np.atleast_2d(kwargs['population'].data)
-  popFitness = np.atleast_1d(kwargs['fitness'].data)
+  popFitness = np.atleast_1d(kwargs['populationFitness'].data)
 
   newPopulation = population
   newFitness = popFitness
@@ -142,26 +142,14 @@ def crowDistAndRankBased(newRlz,**kwargs):
     @ Out, newFitness, xr.DataArray, fitness of the new population
     @ Out, newAge, list, Ages of each chromosome in the new population.
   """
-  print(kwargs)
-  popSize = np.shape(kwargs['population'])[0]
-  if ('age' not in kwargs.keys() or kwargs['age'] == None):
-    popAge = [0]*popSize
-  else:
-    popAge = kwargs['age']
-
-  offSpringsFitness = np.atleast_1d(kwargs['offSpringsFitness'])
   offSpringsObjVals = kwargs['offSpringsObjVals']
   offSprings = np.atleast_2d(newRlz[kwargs['variables']].to_array().transpose().data)
   
   population = np.atleast_2d(kwargs['population'].data)
   populationObjVals = kwargs['populationObjVals']
-  populationFitness = np.atleast_1d(kwargs['populationFitness'].data)
     
   currentPopulation= np.concatenate([population,offSprings])
-  currentPopulationFitness = np.concatenate([populationFitness,offSpringsFitness])
   currentPopulationObjVals = np.concatenate([offSpringsObjVals,populationObjVals])
-  #currentAge = list(map(lambda x:x+1, popAge))
-  #currentAge.extend([0]*len(offSpringsFitness))
 
   rankIndexes = np.array(frontUtils.rankNonDominatedFrontiers(currentPopulationObjVals))
   rankIndex = 1
@@ -177,7 +165,7 @@ def crowDistAndRankBased(newRlz,**kwargs):
     selectedFrontIndexes = np.where(rankIndexes==rankIndex)
     # Determine new Front  
     frontNPopulation = currentPopulation[selectedFrontIndexes]
-    frontNFitness    = currentPopulationFitness[selectedFrontIndexes]
+    frontNFitness    = 
     frontNObjVals    = currentPopulationObjVals[selectedFrontIndexes]
     frontCardinality = (frontNPopulation).shape[0]
     
