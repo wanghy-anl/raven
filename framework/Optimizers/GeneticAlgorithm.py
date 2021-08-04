@@ -471,14 +471,15 @@ class GeneticAlgorithm(RavenSampled):
                                                                                                      popObjectiveVals = self.objectiveVal,
                                                                                                      newRlz = rlz,
                                                                                                      offSpringsFitness = offSpringFitness,
-                                                                                                     offSpringsObjVals = offSpringsObjectiveVal)
+                                                                                                     offSpringsObjVals = offSpringsObjectiveVal,
+                                                                                                     objVar = self._objectiveVar.split(','))
       else:
         self.population   = offSprings
         self.fitness      = offSpringFitness
         if not self.multiObjectiveMode:
           self.objectiveVal = list(np.atleast_1d(rlz[self._objectiveVar].values))
         else:
-          self.objectiveVal = list(np.atleast_1d(rlz[self._objectiveVar.split(',')].values))        
+          self.objectiveVal = rlz[self._objectiveVar.split(',')]       
 
       # 1 @ n: Parent selection from population
       # pair parents together by indexes
@@ -529,7 +530,11 @@ class GeneticAlgorithm(RavenSampled):
               repeated.append(j)
         repeated = list(set(repeated))
         if repeated:
-          newChildren = self._mutationInstance(offSprings=children[repeated,:], distDict = self.distDict, locs = self._mutationLocs, mutationProb=self._mutationProb,variables=list(self.toBeSampled))
+          newChildren = self._mutationInstance(offSprings=children[repeated,:], 
+                                               distDict = self.distDict, 
+                                               locs = self._mutationLocs, 
+                                               mutationProb=self._mutationProb,
+                                               variables=list(self.toBeSampled))
           children.data[repeated,:] = newChildren.data
         else:
           flag = False
