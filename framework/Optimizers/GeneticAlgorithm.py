@@ -455,7 +455,6 @@ class GeneticAlgorithm(RavenSampled):
                                              penalty = None,
                                              constraintFunction = g,
                                              type = self._minMax)
-
     if not self.multiObjectiveMode:
       self._collectOptPoint(offSprings, offSpringFitness, offSpringsObjectiveVal)
       self._resolveNewGeneration(traj, rlz, offSpringsObjectiveVal, offSpringFitness, info)
