@@ -480,7 +480,7 @@ class GeneticAlgorithm(RavenSampled):
           self.objectiveVal = list(np.atleast_1d(rlz[self._objectiveVar].values))
         else:
           self.objectiveVal = rlz[self._objectiveVar.split(',')]       
-
+      print(self.population)
       # 1 @ n: Parent selection from population
       # pair parents together by indexes
       parents = self._parentSelectionInstance(self.population,
@@ -841,7 +841,7 @@ class GeneticAlgorithm(RavenSampled):
       @ In, point, xr.DataArray, the DataArray containing the chromosome (point)
       @ In, constraint, external function, explicit constraint function
       @ out, g, float, the value g_j(x) is the value of the constraint function number j when fed with the chromosome (point)
-                if $g_j(x)<0$, then the contraint is violated
+                if $g_j(x)<0$, then the constraint is violated
     """
     g = self._applyFunctionalConstraints(point, constraint)
     return g
@@ -864,7 +864,7 @@ class GeneticAlgorithm(RavenSampled):
       @ In, point, xr.DataArray, the dataArray containing potential point to apply constraints to
       @ In, constraint, external function, constraint function
       @ out, g, float, the value g_j(x) is the value of the constraint function number j when fed with the chromosome (point)
-                if $g_j(x)<0$, then the contraint is violated
+                if $g_j(x)<0$, then the constraint is violated
     """
     # are we violating functional constraints?
     g = self._checkFunctionalConstraints(point, constraint)
@@ -876,7 +876,7 @@ class GeneticAlgorithm(RavenSampled):
       @ In, point, dict, the dictionary containing the chromosome (point)
       @ In, constraint, external function, explicit constraint function
       @ out, g, float, the value g_j(x) is the value of the constraint function number j when fed with the chromosome (point)
-                if $g_j(x)<0$, then the contraint is violated
+                if $g_j(x)<0$, then the constraint is violated
     """
     inputs = dataArrayToDict(point)
     inputs.update(self.constants)
@@ -890,7 +890,7 @@ class GeneticAlgorithm(RavenSampled):
       @ In, opt, dict, the dictionary containing the chromosome (point)
       @ In, impConstraint, external function, implicit constraint function
       @ out, g, float, the value g_j(x, objVar) is the value of the constraint function number j when fed with the chromosome (point)
-                if $g_j(x, objVar)<0$, then the contraint is violated
+                if $g_j(x, objVar)<0$, then the constraint is violated
     """
     inputs = dataArrayToDict(point)
     inputs.update(self.constants)
@@ -916,7 +916,6 @@ class GeneticAlgorithm(RavenSampled):
              'fitness':rlz['fitness'],
              'AHDp':self.ahdp,
              'AHD':self.ahd}
-
     for var, val in self.constants.items():
       toAdd[var] = val
 

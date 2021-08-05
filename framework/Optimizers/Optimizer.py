@@ -349,7 +349,7 @@ class Optimizer(AdaptiveSampler):
 
   def _addTrackingInfo(self, info, **kwargs):
     """
-      Creates realization identifiers to identifiy particular realizations as they return from the JobHandler.
+      Creates realization identifiers to identify particular realizations as they return from the JobHandler.
       Expandable by inheritors.
       @ In, info, dict, dictionary of potentially-existing added identifiers
       @ In, kwargs, dict, dictionary of keyword arguments
@@ -472,7 +472,7 @@ class Optimizer(AdaptiveSampler):
   def denormalizeData(self, normalized):
     """
       Method to normalize the data
-      @ In, normalized, dict, dictionary containing the value of decision variables to be deormalized, in form of {varName: varValue}
+      @ In, normalized, dict, dictionary containing the value of decision variables to be denormalized, in form of {varName: varValue}
       @ Out, denormed, dict, dictionary containing the value of denormalized decision variables, in form of {varName: varValue}
     """
     # some algorithms should not be normalizing and denormalizing!

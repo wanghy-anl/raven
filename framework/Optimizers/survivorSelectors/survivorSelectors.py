@@ -146,9 +146,8 @@ def crowDistAndRankBased(newRlz,**kwargs):
   allVars = kwargs['objVar'] + kwargs['variables']
   offspringsConverted = newRlz.to_dataframe()[allVars]
   offspringsConverted['fitness'] = kwargs['offSpringsFitness']
-  offspringsConverted['age'] = np.zeros(20)
+  offspringsConverted['age'] = np.zeros(offspringsConverted.shape[0])
   
-  print(kwargs['popObjectiveVals'])
   populationConverted = kwargs['popObjectiveVals'].to_dataframe()
   for index,var in enumerate(kwargs['variables']): 
     populationConverted[var] = kwargs['population'].values[:,index]
@@ -190,7 +189,7 @@ def crowDistAndRankBased(newRlz,**kwargs):
     currentRankIndex = currentRankIndex + 1
 
 
-  mergedPopulation.index = np.arange(0,40)
+  mergedPopulation.index = np.arange(0,mergedPopulation.shape[0])
   selectedPopulation = mergedPopulation.loc[finalPopulationIndexes]
     
   newPopulationArray = xr.DataArray(selectedPopulation[kwargs['variables']],
@@ -205,10 +204,10 @@ def crowDistAndRankBased(newRlz,**kwargs):
   newPopulationObjVals = xr.Dataset(selectedPopulation[kwargs['objVar']])
 
   newPopulationAge = xr.DataArray(selectedPopulation['age'],
-                                 dims=['chromosome'],
-                                 coords={'chromosome':np.arange(np.shape(selectedPopulation)[0])})
+                                  dims=['chromosome'],
+                                  coords={'chromosome':np.arange(np.shape(selectedPopulation)[0])})
 
-  return newPopulationArray,newPopulationFitness,newPopulationAge,newPopulationObjVals
+  return newPopulationArray, newPopulationFitness, newPopulationAge, newPopulationObjVals
 
 
 __survivorSelectors = {}

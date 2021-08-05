@@ -123,7 +123,7 @@
     </PointSet>
     <PointSet name="opt_export">
       <Input>trajID</Input>
-      <Output>x1,x2,ans1,ans2,age,batchId,fitness,iteration,accepted,conv_objective</Output>
+      <Output>x1,x2</Output>
     </PointSet>
   </DataObjects>
 
