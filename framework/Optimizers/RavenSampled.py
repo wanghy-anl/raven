@@ -516,7 +516,7 @@ class RavenSampled(Optimizer):
     # FIXME check implicit constraints? Function call, - Jia
     acceptable, old, rejectReason = self._checkAcceptability(traj, rlz, optVal, info)
     converged = self._updateConvergence(traj, rlz, old, acceptable)
-    # we only want to update persistance if we've accepted a new point.
+    # we only want to update persistence if we've accepted a new point.
     # We don't want rejected points to count against our convergence.
     if acceptable in ['accepted']:
       self._updatePersistence(traj, converged, optVal)

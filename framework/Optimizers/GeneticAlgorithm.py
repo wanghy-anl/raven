@@ -458,7 +458,10 @@ class GeneticAlgorithm(RavenSampled):
     if not self.multiObjectiveMode:
       self._collectOptPoint(offSprings, offSpringFitness, offSpringsObjectiveVal)
       self._resolveNewGeneration(traj, rlz, offSpringsObjectiveVal, offSpringFitness, info)
-
+    else:
+      self._collectOptPoint(offSprings, offSpringFitness, offSpringFitness)
+      self._resolveNewGeneration(traj, rlz, offSpringFitness, offSpringFitness, info)
+      
     if self._activeTraj:
       # 5.2@ n-1: Survivor selection(rlz)
       # update population container given obtained children
@@ -599,7 +602,8 @@ class GeneticAlgorithm(RavenSampled):
     if self._writeSteps == 'every':
       for i in range(rlz.sizes['RAVEN_sample_ID']):
         rlzDict = dict((var,np.atleast_1d(rlz[var].data)[i]) for var in self.toBeSampled.keys())
-        rlzDict[self._objectiveVar] = np.atleast_1d(rlz[self._objectiveVar].data)[i]
+        for var in self._objectiveVar.split(','):
+          rlzDict[self._objectiveVar] = np.atleast_1d(rlz[var].data)[i]
         rlzDict['fitness'] = np.atleast_1d(fitness.data)[i]
         self._updateSolutionExport(traj, rlzDict, acceptable,None)
     # decide what to do next
@@ -625,6 +629,7 @@ class GeneticAlgorithm(RavenSampled):
     """
     optPoints,fit,obj = zip(*[[x,y,z] for x,y,z in sorted(zip(np.atleast_2d(population.data),np.atleast_1d(fitness.data),objectiveVal),reverse=True,key=lambda x: (x[1]))])
     point = dict((var,float(optPoints[0][i])) for i,var in enumerate(self.toBeSampled.keys()))
+    print(obj[0])
     if (self.counter>1 and obj[0] <= self.bestObjective and fit[0]>=self.bestFitness) or self.counter == 1:
       self.bestPoint = point
       self.bestFitness = fit[0]
@@ -910,7 +915,7 @@ class GeneticAlgorithm(RavenSampled):
       @ Out, toAdd, dict, additional entries
     """
     # meta variables
-    toAdd = {'age': 0 if self.popAge==None else self.popAge,
+    toAdd = {'age': 0, #if self.popAge==None else self.popAge,
              'batchId':self.batchId,
              'fitness':rlz['fitness'],
              'AHDp':self.ahdp,
