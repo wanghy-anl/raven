@@ -36,9 +36,32 @@ class dataObjectLabelFilter(PostProcessorReadyInterface):
       @ Out, inputSpecification, InputData.ParameterInput, class to use for
         specifying input of cls.
     """
-    inputSpecification = super().getInputSpecification()
-    inputSpecification.addSubSimple("label", InputTypes.StringType)
-    inputSpecification.addSubSimple("clusterIDs", InputTypes.IntegerListType)
+    specs = super().getInputSpecification()
+    specs.description = r"""The \xmlNode{dataObjectLabelFilter} post-processor allows to filter the portion of a dataObject, either \xmlNode{PointSet}
+                            or \xmlNode{HistorySet}, with a given clustering label. A clustering algorithm associates a unique cluster label to each
+                            element of the dataObject (PointSet or HistorySet). This cluster label is a natural number ranging from 0 (or 1
+                            depending on the algorithm) to \textit{N} where \textit{N} is the number of obtained clusters. Recall that some clustering
+                            algorithms (e.g., K-Means) receive N as input while others (e.g., Mean-Shift) determine N after clustering has
+                            been performed. Thus, this post-processor is naturally employed after a data-mining clustering techniques has been
+                            performed on a dataObject so that each clusters can be analyzed separately.
+                        """
+    specs.addSub(InputData.parameterInputFactory("label", contentType=InputTypes.StringType,
+                                                 descr=r"""name of the clustering label""", default=0))
+    specs.addSub(InputData.parameterInputFactory("clusterIDs", contentType=InputTypes.IntegerListType,
+                                                 descr=r"""IDs of the selected clusters. Note that more than one ID can be provided as input""", default=0))
+    specs.addSub(InputData.parameterInputFactory("clusteringMethod", contentType=InputTypes.makeEnumType('clusteringMethod',
+                              'clusteringMethodType', ['point', 'extended'])),
+                                                 descr=r"""the type of clustering to be
+                                                           performed.  Two options are available:
+                                                           \begin{enumerate}
+                                                             \item \textbf{extended}, the cluster label will be used to cluster over time.
+                                                               This means that
+                                                               only the portion of the history that matches the cluster IDs will be retrived
+                                                             \item \textbf{point}, if any of the clusterIDs are contained in the history,
+                                                               the full history is retrieved
+                                                           \end{enumerate}
+                                                           \default(extended)
+                                                           \nb THIS HAS a meaning for HistorySet ONLY.""", default='extended'))
     return inputSpecification
 
   def __init__(self):
@@ -52,8 +75,12 @@ class dataObjectLabelFilter(PostProcessorReadyInterface):
     self.keepInputMeta(True)
     self.outputMultipleRealizations = True # True indicate multiple realizations are returned
     self.validDataType = ['HistorySet','PointSet'] # The list of accepted types of DataObject
-    self.label        = None
-    self.clusterIDs   = []
+    self.label        = None # name of the clustering label
+    self.clusterIDs   = None # ID of the selected clusters. Note that more than one ID can be provided as input
+    self.clusteringMethod = 'extended' # if extended, the cluster label will be used to cluster over time
+                                       # (=> only the portion of the history that matches the cluster IDs will be retrived),
+                                       # otherwise it will be used to cluster the history based on
+                                       # last values of the clusterIDs. Note: IT HAS MEANING FOR HISTORY SET ONLY!
 
   def _handleInput(self, paramInput):
     """
@@ -65,8 +92,9 @@ class dataObjectLabelFilter(PostProcessorReadyInterface):
       if child.getName() == 'label':
         self.label = child.value
       elif child.getName() == 'clusterIDs':
-        for clusterID in child.value:
-          self.clusterIDs.append(clusterID)
+        self.clusterIDs = child.value
+      elif child.getName() == 'clusteringMethod':
+        self.clusteringMethod = child.value
       else:
         self.raiseAnError(IOError, 'Post-Processor ' + str(self.name) + ' : XML node ' + str(child) + ' is not recognized')
 
@@ -90,6 +118,8 @@ class dataObjectLabelFilter(PostProcessorReadyInterface):
     """
     _, _, inputDict = inputIn['Data'][0]
     outputDict = {}
+    if self.label not in inputDict['data']:
+      self.raiseAnError(IOError, 'Not found label ' + str(self.label) + ' in input dataObject!')
     outputDict['data'] ={}
     outputDict['dims'] = {}
     outputDict['metadata'] = copy.deepcopy(inputDict['metadata']) if 'metadata' in inputDict.keys() else {}
@@ -107,6 +137,10 @@ class dataObjectLabelFilter(PostProcessorReadyInterface):
             indexes = np.where(np.in1d(inputDict['data'][self.label][cnt],self.clusterIDs))[0]
             if len(indexes) > 0:
               temp.append(copy.deepcopy(inputDict['data'][key][cnt][indexes]))
+              if self.clusteringMethod == 'extended':
+                temp.append(copy.deepcopy(inputDict['data'][key][cnt][indexes]))
+              else:
+                temp.append(copy.deepcopy(inputDict['data'][key][cnt]))
           outputDict['data'][key] = np.asanyarray(temp)
           outputDict['dims'][key] = []
         else:
