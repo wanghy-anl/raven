@@ -30,53 +30,84 @@ import numpy as np
 in_vars = ['x0', 'y0', 'v0', 'ang', 'timeOption']
 out_vars = ['x', 'y', 'r', 't', 'v', 'a']
 
-def prange(v,th,y0=0,g=9.8):
+def prange(v0,th,x0=0,y0=0,g=9.8):
   """
-    Calculates the analytic range.
-    @ In, v, float, velocity of the projectile
-    @ In, th, float, angle to the ground for initial projectile motion
-    @ In, y0, float, optional, initial height of projectile
+    Calculates the analytic horizontal range.
+    @ In, v0, float, initial velocity of the projectile
+    @ In, th, float, angle to the ground for initial projectile motion (i.e., firing angle)
+    @ In, x0, float, optional, initial horizontal location of firing point
+    @ In, y0, float, optional, initial height of firing point
     @ In, g, float, optional, gravitational constant (m/s/s)
-    @ Out, prange, float, range
+    @ Out, prange, float, horizontal range
   """
-  return v*np.cos(th)/g * (v*np.sin(th) + np.sqrt(v*v*np.sin(th)**2+2.*g*y0))
+  return v0**2*np.sin(2*th)/2/g + v0 * np.cos(th)/g * np.sqrt(v0**2 *np.sin(th)**2+2*g*y0)+ x0
 
-def time_to_ground(v,th,y0=0,g=9.8):
+
+def time_to_ground(v0,th,y0=0,g=9.8):
   """
     Calculates the analytic time of flight
-    @ In, v, float, velocity of the projectile
+    @ In, v0, float, initial velocity of the projectile
     @ In, th, float, angle to the ground for initial projectile motion
     @ In, y0, float, optional, initial height of projectile
     @ In, g, float, optional, gravitational constant (m/s/s)
     @ Out, time_to_ground, float, time projectile is above the ground
   """
-  return v*np.sin(th)/g + np.sqrt(v*v*np.sin(th)**2+2.*g*y0)/g
+  return v0*np.sin(th)/g + np.sqrt(v0**2 * np.sin(th)**2 + 2*g*y0)/g
 
-def x_pos(x0,v,t):
+def x_pos(v0,th,t,x0=0):
   """
     Calculates the x position in time
-    @ In, x0, float, initial horizontal position
-    @ In, v, float, velocity of the projectile
-    @ In, t, float, time of flight
-    @ Out, x_pos, float, horizontal position
+    @ In, v0, float, initial velocity of the projectile in [m/s]
+    @ In, th, float, initial firing angle of the projectile in [radians]
+    @ In, t, float, time instance (at which the horizontal position is sought) in [sec]
+    @ In, x0, float, initial horizontal position in [m]
+    @ Out, x_pos, float, horizontal position at instance t in [m]
   """
-  return x0 + v*t
+  return x0 + v0 * np.cos(th) * t
 
-def y_pos(y0,v,t):
+def y_pos(v0,th,t,y0=0,g=8.8):
   """
     Calculates the analytic vertical position in time
-    @ In, y0, float, initial vertical position
-    @ In, v, float, velocity of the projectile
+    @ In, v0, float, velocity of the projectile
+    @ In, th, float, initial firing angle of the projectile in [radians]
     @ In, t, float, time of flight
+    @ In, y0, float, initial vertical position
+    @ In, g, float, optional, gravitational constant (m/s/s)
     @ Out, y_pos, float, vertical position
   """
-  return y0 + v*t - 4.9*t*t
+  return y0 + v0 * np.sin(th) * t - 0.5 * g * t**2
 
 def calc_vel(y0, y, v0, ang, g=9.8):
-  E_m = 0.5 * v0*v0 + g*y0
-  vel = np.sqrt(v0*v0 - 2*g*(y-y0))
+  """
+    Calculates the velocity given the current vertical position
+    @ In, y0, float, initial vertical position
+    @ In, y, float, current vertical position
+    @ In, v0, float, initial velocity of the projectile
+    @ In, ang, float, firing angle
+    @ In, g, float, optional, gravitational constant (m/s/s)
+    @ Out, vel, float, total velocity at the given vertical position
+    @ Out, x_vel, float, horizontal component of the velocity at any instance
+    @ Out, y_vel, float, vertical velocity at the given vertical position
+  """
+  vel = np.sqrt(v0**2 - 2*g*(y-y0))
   x_vel = v0 * np.cos(ang)
   y_vel = np.sqrt(vel*vel - x_vel*x_vel)
+  return x_vel, y_vel, vel
+
+def calc_vel_t(t, v0, ang, g=9.8):
+  """
+    Calculates the velocity given the current vertical position
+    @ In, t, float, time instance at which the velocities are sought
+    @ In, v0, float, initial velocity of the projectile
+    @ In, ang, float, firing angle
+    @ In, g, float, optional, gravitational constant (m/s/s)
+    @ Out, vel, float, total velocity at the given vertical position
+    @ Out, x_vel, float, horizontal component of the velocity at any instance
+    @ Out, y_vel, float, vertical velocity at the given vertical position
+  """
+  x_vel = v0 * np.cos(ang)
+  y_vel = v0 * np.sin(ang) - g * t
+  vel = np.sqrt(x_vel**2 + y_vel**2)
   return x_vel, y_vel, vel
 
 def current_angle(v0, ang, vel):
@@ -86,7 +117,7 @@ def run(raven, inputs):
   vars = {'x0': get_from_raven(raven,'x0', 0),
           'y0': get_from_raven(raven,'y0', 0),
           'v0': get_from_raven(raven,'v0', 1),
-          'ang': get_from_raven(raven,'v0', 45),
+          'ang': get_from_raven(raven,'angle', 45),
           'timeOption': get_from_raven(raven,'timeOption', 0)}
   res = main(vars)
   raven.x = res['x']
@@ -104,7 +135,7 @@ def main(Input):
   x0 = Input.get('x0', 0)
   y0 = Input.get('y0', 0)
   v0 = Input.get('v0', 1)
-  ang = Input.get('angle', 45)
+  ang = Input.get('ang', 45)
   g = Input.get('g', 9.8)
   timeOption = Input.get('timeOption', 0)
   ang = ang * np.pi / 180
