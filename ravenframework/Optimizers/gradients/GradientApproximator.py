@@ -12,10 +12,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """
-  TODO
+  Base class for gradient evaluators
 
   Reworked 2020-01
-  @author: talbpaul
+  @author: talbpaul, alfonsi
 """
 import abc
 
@@ -43,7 +43,11 @@ class GradientApproximator(utils.metaclass_insert(abc.ABCMeta, object)):
         search at which points should be evaluated to estimate the local gradient. This scalar is a
         multiplier for the step size used to reach this optimal point candidate from the previous
         optimal point, so this scalar should generally be a small percent. \default{0.01}"""))
-
+    specs.addSub(InputData.parameterInputFactory('numberSamples', contentType=InputTypes.IntegerType,
+        descr=r"""Number of re-evaluation of the gradient (used to mitigate the noise for optimization
+        driving stochastic models (e.g., Monte Carlo Neutronics codes)). If greater then 1, the gradient
+        is evaluated ``numberSamples'' times and then averaged.
+           \default{1}"""))
     return specs
 
   @classmethod
@@ -64,9 +68,10 @@ class GradientApproximator(utils.metaclass_insert(abc.ABCMeta, object)):
     ## Instance Variable Initialization
     # public
     # _protected
-    self._optVars = None   # list(str) of opt variables
-    self._proximity = 0.01 # float, scaling for perturbation distance
-    self.N = None          # int, dimensionality
+    self._optVars = None    # list(str) of opt variables
+    self._proximity = 0.01  # float, scaling for perturbation distance
+    self._numberSamples = 1 # int, number of re-evaluation of the gradient
+    self.N = None           # int, dimensionality
     # __private
     # additional methods
 
@@ -79,6 +84,9 @@ class GradientApproximator(utils.metaclass_insert(abc.ABCMeta, object)):
     proximity = specs.findFirst('gradDistanceScalar')
     if proximity is not None:
       self._proximity = proximity.value
+    numberSamples = specs.findFirst('numberSamples')
+    if numberSamples is not None:
+      self._numberSamples = numberSamples.value
 
   def initialize(self, optVars):
     """

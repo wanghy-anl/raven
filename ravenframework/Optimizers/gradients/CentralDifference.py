@@ -5,7 +5,8 @@
 import copy
 from ...utils import mathUtils
 from .GradientApproximator import GradientApproximator
-
+lr = None
+zeros = None
 
 class CentralDifference(GradientApproximator):
   """
@@ -59,18 +60,21 @@ class CentralDifference(GradientApproximator):
       delta = dh
       neg[optVar] = optValue - delta
       pos[optVar] = optValue + delta
+      for s in range(self._numberSamples):
 
-      evalPoints.append(neg)
-      evalInfo.append({'type': 'grad',
-                      'optVar': optVar,
-                      'delta': delta,
-                      'side': 'negative'})
+        evalPoints.append(neg)
+        evalInfo.append({'type': 'grad',
+                        'optVar': optVar,
+                        'delta': delta,
+                        'side': 'negative',
+                        'sampleId': s + 1})
 
-      evalPoints.append(pos)
-      evalInfo.append({'type': 'grad',
-                      'optVar': optVar,
-                      'delta': delta,
-                      'side': 'positive'})
+        evalPoints.append(pos)
+        evalInfo.append({'type': 'grad',
+                        'optVar': optVar,
+                        'delta': delta,
+                        'side': 'positive',
+                        'sampleId': s + 1})
 
     return evalPoints, evalInfo
 
@@ -86,26 +90,22 @@ class CentralDifference(GradientApproximator):
       @ Out, foundInf, bool, if True then infinity calculations were used
     """
     gradient = {}
-    for _, var in enumerate(self._optVars):
-      # get the positive and negative sides for this var
-      neg = None
-      pos = None
-      # TODO this search could get expensive in high dimensions!
-      for g, grad in enumerate(grads):
-        info = infos[g]
-        if info['optVar'] == var:
-          if info['side'] == 'negative':
-            neg = grad
-          else:
-            pos = grad
-          if neg and pos:
-            break
-      # dh for pos and neg (note we don't assume delta was unchanged, we recalculate it)
-      dhNeg = opt[var] - neg[var]
-      dhPos = pos[var] - opt[var]
-      # 3-point central difference doesn't use opt point, since it cancels out
-      # also the terms are weighted by the dh on each side
-      gradient[var] = 1/(2*dhNeg) * pos[objVar] - 1/(2*dhPos) * neg[objVar]
+    global lr
+    global zeros
+    if lr is None:
+      import numpy as np
+      import sklearn
+      import sklearn.linear_model
+      lr = sklearn.linear_model.LinearRegression()
+      zeros = np.zeros
+    X, y= zeros((len(grads), len(self._optVars))),  zeros(len(grads))
+    for g, grad in enumerate(grads):
+      for i, var in enumerate(self._optVars):
+        X[g, i] = grads[g][var]
+      y[g] = grads[g][objVar]
+    der =  lr.fit(X, y).coef_
+    for i, var in enumerate(self._optVars):
+      gradient[var] = der[i]
 
     magnitude, direction, foundInf = mathUtils.calculateMagnitudeAndVersor(list(gradient.values()))
     direction = dict((var, float(direction[v])) for v, var in enumerate(gradient.keys()))
@@ -115,5 +115,7 @@ class CentralDifference(GradientApproximator):
   def numGradPoints(self):
     """
       Returns the number of grad points required for the method
+      @ In, None
+      @ Out, numGradPoints, int, number grad points times number of samples needed
     """
-    return self.N * 2
+    return self.N * 2 * self._numberSamples

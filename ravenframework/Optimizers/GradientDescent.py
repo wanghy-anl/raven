@@ -17,16 +17,17 @@
   Created 2020-01
   @author: talbpaul
 """
-#for future compatibility with Python 3--------------------------------------------------------------
-from __future__ import division, print_function, unicode_literals, absolute_import
-#End compatibility block for Python 3----------------------------------------------------------------
+#Internal Modules (Lazy Importer)--------------------------------------------------------------------
+from ..utils.importerUtils import importModuleLazy
+#Internal Modules (Lazy Importer) End----------------------------------------------------------------
 
 #External Modules------------------------------------------------------------------------------------
 import copy
 from collections import deque, defaultdict
-import numpy as np
-
+np = importModuleLazy("numpy")
+sklearn = importModuleLazy("sklearn")
 #External Modules End--------------------------------------------------------------------------------
+
 
 #Internal Modules------------------------------------------------------------------------------------
 from ..utils import InputData, InputTypes, mathUtils

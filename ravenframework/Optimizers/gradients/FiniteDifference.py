@@ -87,11 +87,12 @@ class FiniteDifference(GradientApproximator):
         new = constraints['normalize'](altPoint)
         delta = new[optVar] - opt[optVar]
       # store as samplable point
-      evalPoints.append(new)
-      evalInfo.append({'type': 'grad',
+      for s in range(self._numberSamples):
+        evalPoints.append(new)
+        evalInfo.append({'type': 'grad',
                        'optVar': optVar,
-                       'delta': delta})
-
+                       'delta': delta,
+                       'sampleId': s + 1})
     return evalPoints, evalInfo
 
   def _handleConstraints(self, newPoint, original, optVar, constraints):
@@ -187,7 +188,7 @@ class FiniteDifference(GradientApproximator):
       activeVar = info['optVar']
       lossDiff = np.atleast_1d(mathUtils.diffWithInfinites(pt[objVar], opt[objVar]))
       grad = lossDiff/delta
-      gradient[activeVar] = grad
+      gradient[activeVar] = grad / float(self._numberSamples) if activeVar not in gradient else grad / float(self._numberSamples) + gradient[activeVar]
     # obtain the magnitude and versor of the gradient to return
     magnitude, direction, foundInf = mathUtils.calculateMagnitudeAndVersor(list(gradient.values()))
     direction = dict((var, float(direction[v])) for v, var in enumerate(gradient.keys()))
@@ -198,9 +199,7 @@ class FiniteDifference(GradientApproximator):
   def numGradPoints(self):
     """
       Returns the number of grad points required for the method
+      @ In, None
+      @ Out, numGradPoints, int, number grad points times number of samples needed
     """
-    return self.N
-
-  ###################
-  # Utility Methods #
-  ###################
+    return self.N * self._numberSamples
