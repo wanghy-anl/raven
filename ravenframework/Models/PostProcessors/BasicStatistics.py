@@ -18,10 +18,6 @@ Created on July 10, 2013
 """
 #External Modules---------------------------------------------------------------
 import numpy as np
-import os
-import copy
-from collections import OrderedDict, defaultdict
-import six
 import xarray as xr
 import scipy.stats as stats
 #External Modules End-----------------------------------------------------------
@@ -31,12 +27,11 @@ from .PostProcessorInterface import PostProcessorInterface
 from ...utils import utils
 from ...utils import InputData, InputTypes
 from ...utils import mathUtils
-from ... import Files
 #Internal Modules End-----------------------------------------------------------
 
 class BasicStatistics(PostProcessorInterface):
   """
-    BasicStatistics filter class. It computes all the most popular statistics
+    BasicStatistics class. It computes all the most popular statistics
   """
 
   scalarVals = ['expectedValue',
