@@ -395,20 +395,29 @@ class SupervisedLearning(BaseInterface):
 
     if self.performFeatureSpaceTransformation:
       # nsamples, timeStep, nFeatures
+      from sklearn.pipeline import Pipeline
+      from FDApy.preprocessing.dim_reduction.fpca import MFPCA
+      from FDApy.representation.functional_data import DenseFunctionalData
       nComponents = len(self.featureSpaceTransformationSettings['parametersToInclude'])
       if self.featureSpaceTransformationSettings['transformationMethod'] == 'PCA':
-        self.transformationEngine = sklearn.decomposition.IncrementalPCA(n_components=nComponents, whiten=True)
+        self.transformationEngine = Pipeline([('scaling', sklearn.preprocessing.Normalizer()),
+                                                               ('dr', sklearn.decomposition.IncrementalPCA(n_components=nComponents, whiten=True))])
       elif self.featureSpaceTransformationSettings['transformationMethod'].startswith("Kernel"):
         # kernel PCA
         kernel = self.featureSpaceTransformationSettings['transformationMethod'].lower().replace("kernel", "").replace("pca", "")
-        self.transformationEngine = sklearn.decomposition.KernelPCA(n_components=nComponents, kernel= kernel,  fit_inverse_transform=True, random_state=0)
+        self.transformationEngine = Pipeline([('scaling', sklearn.preprocessing.Normalizer()),
+                                                               ('dr', sklearn.decomposition.KernelPCA(n_components=nComponents, kernel= kernel,
+                                                                                                      fit_inverse_transform=True, random_state=0))])
       elif self.featureSpaceTransformationSettings['transformationMethod'] == 'ICA':
-        self.transformationEngine = sklearn.decomposition.FastICA(n_components=nComponents, random_state=0)
+        self.transformationEngine = Pipeline([('scaling', sklearn.preprocessing.Normalizer()),
+                                                               ('dr', sklearn.decomposition.FastICA(n_components=nComponents, random_state=0))])
       # This should be activated when the scaler is avaialable
       #else:
       #  self.transformationEngine = sklearn.decomposition.NMF(n_components=nComponents)
       #  setattr(self.transformationEngine, "scaler", sklearn.preprocessing.MinMaxScaler())
-
+      aaa =  MFPCA(n_components=nComponents, normalize=True)
+      
+      
       params = self.featureSpaceTransformationSettings['parametersToInclude']
       space = self.featureSpaceTransformationSettings['whichSpace']
       if space == 'feature':
@@ -422,12 +431,15 @@ class SupervisedLearning(BaseInterface):
         # the application of FPCA (Functional Principal Component Analysis)
         if space == 'feature':
           shape = featureValues.shape
-          newSpace = self.transformationEngine.fit_transform(featureValues.reshape(-1,shape[2])[:, indeces].T)
-          featureValues = newSpace.reshape(shape)
+          newSpace = self.transformationEngine.fit_transform(featureValues.reshape(-1,shape[2])[:, indeces])
+          newSpace = newSpace.reshape((shape[0], shape[1], nComponents))
+          featureValues[:, :, indeces] = newSpace[:, :, :]
         else:
           shape = targetValues.shape
-          newSpace = self.transformationEngine.fit_transform(targetValues.reshape(-1,shape[2])[:, indeces].T).T
-          targetValues = newSpace.reshape(shape)
+          newSpace = self.transformationEngine.fit_transform(targetValues.reshape(-1,shape[2])[:, indeces])
+          newSpace = newSpace.reshape((shape[0], shape[1], nComponents))
+          targetValues[:, :, indeces] = newSpace[:, :, :]
+          bbb = aaa.fit(targetValues)
       else:
         if space == 'feature':
           featureValues[ :, indeces] = self.transformationEngine.fit_transform(featureValues[:, indeces])
