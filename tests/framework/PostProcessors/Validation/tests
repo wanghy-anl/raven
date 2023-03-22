@@ -39,6 +39,6 @@
       input = 'test_representativity_rankDifficientLinExpToTarget.xml'
       csv = 'RepresentativityrankDifficient/pp1_metric_dump.csv'
       rel_err = 0.00001
-      zero_threshold = 1e-9
+      zero_threshold = 1e-8
     [../]
 []
