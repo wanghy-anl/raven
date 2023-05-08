@@ -80,10 +80,6 @@ class Lasso(ScikitLearnBase):
     specs.addSub(InputData.parameterInputFactory("precompute", contentType=InputTypes.BoolType,
                                                  descr=r"""Whether to use a precomputed Gram matrix to speed up calculations.
                                                  For sparse input this option is always True to preserve sparsity.""", default=False))
-    specs.addSub(InputData.parameterInputFactory("normalize", contentType=InputTypes.BoolType,
-                                                 descr=r"""This parameter is ignored when fit_intercept is set to False. If True,
-                                                 the regressors X will be normalized before regression by subtracting the mean and
-                                                 dividing by the l2-norm.""", default=False))
     specs.addSub(InputData.parameterInputFactory("max_iter", contentType=InputTypes.IntegerType,
                                                  descr=r"""The maximum number of iterations.""", default=1000))
     specs.addSub(InputData.parameterInputFactory("positive", contentType=InputTypes.BoolType,
@@ -105,7 +101,7 @@ class Lasso(ScikitLearnBase):
     """
     super()._handleInput(paramInput)
     settings, notFound = paramInput.findNodesAndExtractValues(['alpha','tol', 'fit_intercept', 'precompute',
-                                                               'normalize','max_iter','positive','selection',
+                                                               'max_iter','positive','selection',
                                                                'warm_start'])
     # notFound must be empty
     assert(not notFound)

@@ -44,7 +44,7 @@
     <ROM name="dtr" subType="DecisionTreeRegressor">
       <Features>X,Y</Features>
       <Target>ans</Target>
-      <criterion>mse</criterion>
+      <criterion>friedman_mse</criterion>
       <splitter>best</splitter>
       <min_samples_split>2</min_samples_split>
       <min_samples_leaf>1</min_samples_leaf>

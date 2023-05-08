@@ -74,10 +74,6 @@ class MultiTaskLassoCV(ScikitLearnBase):
     specs.addSub(InputData.parameterInputFactory("fit_intercept", contentType=InputTypes.BoolType,
                                                  descr=r"""Whether the intercept should be estimated or not. If False,
                                                   the data is assumed to be already centered.""", default=True))
-    specs.addSub(InputData.parameterInputFactory("normalize", contentType=InputTypes.BoolType,
-                                                 descr=r"""This parameter is ignored when fit_intercept is set to False. If True,
-                                                 the regressors X will be normalized before regression by subtracting the mean and
-                                                 dividing by the l2-norm.""", default=False))
     specs.addSub(InputData.parameterInputFactory("max_iter", contentType=InputTypes.IntegerType,
                                                  descr=r"""The maximum number of iterations.""", default=1000))
     specs.addSub(InputData.parameterInputFactory("tol", contentType=InputTypes.FloatType,
@@ -100,7 +96,7 @@ class MultiTaskLassoCV(ScikitLearnBase):
     """
     super()._handleInput(paramInput)
     settings, notFound = paramInput.findNodesAndExtractValues(['eps','tol', 'fit_intercept','n_alpha'
-                                                               'normalize','max_iter','selection','cv'])
+                                                               ,'max_iter','selection','cv'])
     # notFound must be empty
     assert(not notFound)
     self.initializeModel(settings)

@@ -90,10 +90,6 @@ class MultiTaskElasticNet(ScikitLearnBase):
                                                  descr=r"""If set to ``random'', a random coefficient is updated every iteration
                                                  rather than looping over features sequentially by default. This (setting to `random'')
                                                  often leads to significantly faster convergence especially when tol is higher than $1e-4$""", default='cyclic'))
-    specs.addSub(InputData.parameterInputFactory("normalize", contentType=InputTypes.BoolType,
-                                                 descr=r"""This parameter is ignored when fit_intercept is set to False. If True,
-                                                 the regressors X will be normalized before regression by subtracting the mean and
-                                                 dividing by the l2-norm.""", default=False))
     specs.addSub(InputData.parameterInputFactory("warm_start", contentType=InputTypes.BoolType,
                                                  descr=r"""When set to True, reuse the solution of the previous call
                                                  to fit as initialization, otherwise, just erase the previous solution.""", default=False))
@@ -107,7 +103,7 @@ class MultiTaskElasticNet(ScikitLearnBase):
     """
     super()._handleInput(paramInput)
     settings, notFound = paramInput.findNodesAndExtractValues(['tol','alpha','l1_ratio', 'fit_intercept',
-                                                               'max_iter', 'normalize','selection', 'warm_start'])
+                                                               'max_iter','selection', 'warm_start'])
     # notFound must be empty
     assert(not notFound)
     self.initializeModel(settings)

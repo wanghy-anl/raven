@@ -89,10 +89,6 @@ class MultiTaskElasticNetCV(ScikitLearnBase):
                                                  descr=r"""If set to ``random'', a random coefficient is updated every iteration
                                                  rather than looping over features sequentially by default. This (setting to `random'')
                                                  often leads to significantly faster convergence especially when tol is higher than $1e-4$""", default='cyclic'))
-    specs.addSub(InputData.parameterInputFactory("normalize", contentType=InputTypes.BoolType,
-                                                 descr=r"""This parameter is ignored when fit_intercept is set to False. If True,
-                                                 the regressors X will be normalized before regression by subtracting the mean and
-                                                 dividing by the l2-norm.""", default=False))
     specs.addSub(InputData.parameterInputFactory("cv", contentType=InputTypes.IntegerType,
                                                  descr=r"""Determines the cross-validation splitting strategy.
                                                  It specifies the number of folds..""", default=5))
@@ -107,7 +103,7 @@ class MultiTaskElasticNetCV(ScikitLearnBase):
     super()._handleInput(paramInput)
     settings, notFound = paramInput.findNodesAndExtractValues(['tol', 'eps','l1_ratio',
                                                                'n_alpha', 'fit_intercept',
-                                                               'max_iter', 'normalize','selection','cv'])
+                                                               'max_iter','selection','cv'])
     # notFound must be empty
     assert(not notFound)
     self.initializeModel(settings)

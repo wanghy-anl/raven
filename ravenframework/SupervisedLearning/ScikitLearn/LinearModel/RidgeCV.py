@@ -67,10 +67,6 @@ class RidgeCV(ScikitLearnBase):
     specs.addSub(InputData.parameterInputFactory("fit_intercept", contentType=InputTypes.BoolType,
                                                  descr=r"""Whether the intercept should be estimated or not. If False,
                                                   the data is assumed to be already centered.""", default=True))
-    specs.addSub(InputData.parameterInputFactory("normalize", contentType=InputTypes.BoolType,
-                                                 descr=r"""This parameter is ignored when fit_intercept is set to False. If True, the
-                                                 regressors X will be normalized before regression by subtracting the mean and dividing
-                                                 by the l2-norm. """, default=False))
     specs.addSub(InputData.parameterInputFactory("gcv_mode", contentType=InputTypes.makeEnumType("gcv_mode", "gcvType",['auto', 'svd', 'eigen']),
                                                  descr=r"""Flag indicating which strategy to use when performing Leave-One-Out Cross-Validation.
                                                  Options are:
@@ -112,7 +108,7 @@ class RidgeCV(ScikitLearnBase):
     """
     super()._handleInput(paramInput)
     settings, notFound = paramInput.findNodesAndExtractValues(['gcv_mode','fit_intercept',
-                                                               'normalize','cv',
+                                                               'cv',
                                                                'scoring', 'store_cv_values', 'alphas'])
     # notFound must be empty
     assert(not notFound)

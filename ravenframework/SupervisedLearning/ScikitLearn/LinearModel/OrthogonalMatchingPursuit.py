@@ -75,10 +75,6 @@ class OrthogonalMatchingPursuit(ScikitLearnBase):
     specs.addSub(InputData.parameterInputFactory("fit_intercept", contentType=InputTypes.BoolType,
                                                  descr=r"""Whether the intercept should be estimated or not. If False,
                                                   the data is assumed to be already centered.""", default=True))
-    specs.addSub(InputData.parameterInputFactory("normalize", contentType=InputTypes.BoolType,
-                                                 descr=r"""This parameter is ignored when fit_intercept is set to False. If True,
-                                                 the regressors X will be normalized before regression by subtracting the mean and
-                                                 dividing by the l2-norm.""", default=True))
     specs.addSub(InputData.parameterInputFactory("precompute", contentType=InputTypes.StringType,
                                                  descr=r"""Whether to use a precomputed Gram and Xy matrix to speed up calculations.
                                                  Improves performance when n\_targets or n\_samples is very large. """, default='auto'))
@@ -91,7 +87,7 @@ class OrthogonalMatchingPursuit(ScikitLearnBase):
       @ Out, None
     """
     super()._handleInput(paramInput)
-    settings, notFound = paramInput.findNodesAndExtractValues(['fit_intercept','normalize','precompute','tol','n_nonzero_coefs'])
+    settings, notFound = paramInput.findNodesAndExtractValues(['fit_intercept','precompute','tol','n_nonzero_coefs'])
     # notFound must be empty
     assert(not notFound)
     self.initializeModel(settings)

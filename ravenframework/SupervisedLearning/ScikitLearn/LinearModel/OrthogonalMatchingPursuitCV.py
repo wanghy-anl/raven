@@ -72,10 +72,6 @@ class OrthogonalMatchingPursuitCV(ScikitLearnBase):
     specs.addSub(InputData.parameterInputFactory("fit_intercept", contentType=InputTypes.BoolType,
                                                  descr=r"""Whether the intercept should be estimated or not. If False,
                                                   the data is assumed to be already centered.""", default=True))
-    specs.addSub(InputData.parameterInputFactory("normalize", contentType=InputTypes.BoolType,
-                                                 descr=r"""This parameter is ignored when fit_intercept is set to False. If True,
-                                                 the regressors X will be normalized before regression by subtracting the mean and
-                                                 dividing by the l2-norm.""", default=True))
     specs.addSub(InputData.parameterInputFactory("max_iter", contentType=InputTypes.IntegerType,
                                                  descr=r"""Maximum numbers of iterations to perform, therefore maximum
                                                  features to include. Ten-percent of n\_features but at least 5 if available.""", default=None))
@@ -93,7 +89,7 @@ class OrthogonalMatchingPursuitCV(ScikitLearnBase):
       @ Out, None
     """
     super()._handleInput(paramInput)
-    settings, notFound = paramInput.findNodesAndExtractValues(['fit_intercept','normalize','max_iter','cv',
+    settings, notFound = paramInput.findNodesAndExtractValues(['fit_intercept','max_iter','cv',
                                                                'verbose'])
     # notFound must be empty
     assert(not notFound)

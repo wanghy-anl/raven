@@ -42,7 +42,6 @@
       <Target>Z</Target>
       <alpha>1.0</alpha>
       <fit_intercept>True</fit_intercept>
-      <normalize>False</normalize>
       <solver>auto</solver>
     </ROM>
   </Models>

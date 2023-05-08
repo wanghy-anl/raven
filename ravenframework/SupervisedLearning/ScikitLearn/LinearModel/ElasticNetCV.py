@@ -94,10 +94,6 @@ class ElasticNetCV(ScikitLearnBase):
                                                  descr=r"""If set to ``random'', a random coefficient is updated every iteration
                                                  rather than looping over features sequentially by default. This (setting to `random'')
                                                  often leads to significantly faster convergence especially when tol is higher than $1e-4$""", default='cyclic'))
-    specs.addSub(InputData.parameterInputFactory("normalize", contentType=InputTypes.BoolType,
-                                                 descr=r"""This parameter is ignored when fit_intercept is set to False. If True,
-                                                 the regressors X will be normalized before regression by subtracting the mean and
-                                                 dividing by the l2-norm.""", default=False))
     specs.addSub(InputData.parameterInputFactory("n_alphas", contentType=InputTypes.IntegerType,
                                                  descr=r"""Number of alphas along the regularization path,
                                                  used for each l1_ratio.""", default=100))
@@ -112,7 +108,7 @@ class ElasticNetCV(ScikitLearnBase):
     super()._handleInput(paramInput)
     settings, notFound = paramInput.findNodesAndExtractValues(['tol', 'eps','l1_ratio',
                                                                'precompute', 'fit_intercept','cv',
-                                                               'max_iter', 'normalize','selection','positive', 'n_alphas'])
+                                                               'max_iter','selection','positive', 'n_alphas'])
     # notFound must be empty
     assert(not notFound)
     self.initializeModel(settings)

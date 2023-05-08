@@ -69,13 +69,9 @@ class LinearRegression(ScikitLearnBase):
     specs.addSub(InputData.parameterInputFactory("fit_intercept", contentType=InputTypes.BoolType,
                                                  descr=r"""Whether the intercept should be estimated or not. If False,
                                                   the data is assumed to be already centered.""", default=True))
-    specs.addSub(InputData.parameterInputFactory("normalize", contentType=InputTypes.BoolType,
-                                                 descr=r"""This parameter is ignored when fit_intercept is set to False. If True,
-                                                 the regressors X will be normalized before regression by subtracting the mean and
-                                                 dividing by the l2-norm.""", default=False))
     # New in sklearn version 0.24
-    # specs.addSub(InputData.parameterInputFactory("positive", contentType=InputTypes.BoolType,
-    #                                              descr=r"""When set to True, forces the coefficients to be positive.""", default=False))
+    specs.addSub(InputData.parameterInputFactory("positive", contentType=InputTypes.BoolType,
+                                                  descr=r"""When set to True, forces the coefficients to be positive.""", default=False))
     return specs
 
   def _handleInput(self, paramInput):

@@ -68,7 +68,6 @@
       <Target>Z</Target>
       <alpha>1e-10</alpha>
       <n_restarts_optimizer>0</n_restarts_optimizer>
-      <normalize_y>True</normalize_y>
       <kernel>RBF</kernel>
     </ROM>
   </Models>

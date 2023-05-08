@@ -77,10 +77,6 @@ class LarsCV(ScikitLearnBase):
     specs.addSub(InputData.parameterInputFactory("precompute", contentType=InputTypes.StringType,
                                                  descr=r"""Whether to use a precomputed Gram matrix to speed up calculations.
                                                  For sparse input this option is always True to preserve sparsity.""", default='auto'))
-    specs.addSub(InputData.parameterInputFactory("normalize", contentType=InputTypes.BoolType,
-                                                 descr=r"""This parameter is ignored when fit_intercept is set to False. If True,
-                                                 the regressors X will be normalized before regression by subtracting the mean and
-                                                 dividing by the l2-norm.""", default=True))
     specs.addSub(InputData.parameterInputFactory("max_n_alphas", contentType=InputTypes.IntegerType,
                                                  descr=r"""The maximum number of points on the path used to compute the
                                                  residuals in the cross-validation.""", default=1000))
@@ -101,7 +97,7 @@ class LarsCV(ScikitLearnBase):
     """
     super()._handleInput(paramInput)
     settings, notFound = paramInput.findNodesAndExtractValues(['eps','precompute', 'fit_intercept',
-                                                               'normalize','max_n_alphas','cv', 'verbose',
+                                                               'max_n_alphas','cv', 'verbose',
                                                                'max_iter'])
     # notFound must be empty
     assert(not notFound)

@@ -75,10 +75,6 @@ class Lars(ScikitLearnBase):
     specs.addSub(InputData.parameterInputFactory("precompute", contentType=InputTypes.StringType,
                                                  descr=r"""Whether to use a precomputed Gram matrix to speed up calculations.
                                                  For sparse input this option is always True to preserve sparsity.""", default='auto'))
-    specs.addSub(InputData.parameterInputFactory("normalize", contentType=InputTypes.BoolType,
-                                                 descr=r"""This parameter is ignored when fit_intercept is set to False. If True,
-                                                 the regressors X will be normalized before regression by subtracting the mean and
-                                                 dividing by the l2-norm.""", default=True))
     specs.addSub(InputData.parameterInputFactory("n_nonzero_coefs", contentType=InputTypes.IntegerType,
                                                  descr=r"""Target number of non-zero coefficients.""", default=500))
     # new in sklearn version 0.23
@@ -103,7 +99,7 @@ class Lars(ScikitLearnBase):
     """
     super()._handleInput(paramInput)
     settings, notFound = paramInput.findNodesAndExtractValues(['eps','precompute', 'fit_intercept',
-                                                               'normalize','n_nonzero_coefs', 'verbose',
+                                                               'n_nonzero_coefs', 'verbose',
                                                                'fit_path'])
     # notFound must be empty
     assert(not notFound)

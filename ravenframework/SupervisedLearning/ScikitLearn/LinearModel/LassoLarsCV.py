@@ -71,10 +71,6 @@ class LassoLarsCV(ScikitLearnBase):
                                                  the data is assumed to be already centered.""", default=True))
     specs.addSub(InputData.parameterInputFactory("max_iter", contentType=InputTypes.IntegerType,
                                                  descr=r"""The maximum number of iterations.""", default=500))
-    specs.addSub(InputData.parameterInputFactory("normalize", contentType=InputTypes.BoolType,
-                                                 descr=r"""This parameter is ignored when fit_intercept is set to False. If True,
-                                                 the regressors X will be normalized before regression by subtracting the mean and
-                                                 dividing by the l2-norm.""", default=True))
     specs.addSub(InputData.parameterInputFactory("precompute", contentType=InputTypes.StringType,
                                                  descr=r"""Whether to use a precomputed Gram matrix to speed up calculations.
                                                  For sparse input this option is always True to preserve sparsity.""", default='auto'))
@@ -102,7 +98,7 @@ class LassoLarsCV(ScikitLearnBase):
       @ Out, None
     """
     super()._handleInput(paramInput)
-    settings, notFound = paramInput.findNodesAndExtractValues(['fit_intercept','max_iter', 'normalize', 'precompute',
+    settings, notFound = paramInput.findNodesAndExtractValues(['fit_intercept','max_iter', 'precompute',
                                                                'max_n_alphas','eps','positive','cv', 'verbose'])
     # notFound must be empty
     assert(not notFound)

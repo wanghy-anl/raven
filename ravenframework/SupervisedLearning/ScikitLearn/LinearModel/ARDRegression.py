@@ -89,10 +89,6 @@ class ARDRegression(ScikitLearnBase):
     specs.addSub(InputData.parameterInputFactory("fit_intercept", contentType=InputTypes.BoolType,
                                                  descr=r"""Whether to calculate the intercept for this model. Specifies if a constant (a.k.a. bias or intercept)
                                                   should be added to the decision function.""", default=True))
-    specs.addSub(InputData.parameterInputFactory("normalize", contentType=InputTypes.BoolType,
-                                                 descr=r"""This parameter is ignored when fit_intercept is set to False. If True,
-                                                 the regressors X will be normalized before regression by subtracting the mean and
-                                                 dividing by the l2-norm.""", default=True))
     specs.addSub(InputData.parameterInputFactory("verbose", contentType=InputTypes.BoolType,
                                                  descr=r"""Verbose mode when fitting the model.""", default=False))
     return specs
@@ -106,7 +102,7 @@ class ARDRegression(ScikitLearnBase):
     super()._handleInput(paramInput)
     settings, notFound = paramInput.findNodesAndExtractValues(['tol', 'alpha_1','alpha_2','lambda_1','lambda_2',
                                                                'compute_score', 'threshold_lambda', 'fit_intercept',
-                                                               'n_iter', 'normalize', 'verbose'])
+                                                               'n_iter', 'verbose'])
     # notFound must be empty
     assert(not notFound)
     self.initializeModel(settings)

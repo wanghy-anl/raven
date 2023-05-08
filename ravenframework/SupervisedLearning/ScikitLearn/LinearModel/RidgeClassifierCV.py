@@ -66,10 +66,6 @@ class RidgeClassifierCV(ScikitLearnBase):
     specs.addSub(InputData.parameterInputFactory("fit_intercept", contentType=InputTypes.BoolType,
                                                  descr=r"""Whether the intercept should be estimated or not. If False,
                                                   the data is assumed to be already centered.""", default=True))
-    specs.addSub(InputData.parameterInputFactory("normalize", contentType=InputTypes.BoolType,
-                                                 descr=r"""This parameter is ignored when fit_intercept is set to False. If True, the
-                                                 regressors X will be normalized before regression by subtracting the mean and dividing
-                                                 by the l2-norm. """, default=False))
     specs.addSub(InputData.parameterInputFactory("cv", contentType=InputTypes.IntegerType,
                                                  descr=r"""Determines the cross-validation splitting strategy.
                                                  It specifies the number of folds..""", default=None))
@@ -99,7 +95,7 @@ class RidgeClassifierCV(ScikitLearnBase):
       @ Out, None
     """
     super()._handleInput(paramInput)
-    settings, notFound = paramInput.findNodesAndExtractValues(['normalize','fit_intercept','cv', 'alphas',
+    settings, notFound = paramInput.findNodesAndExtractValues(['fit_intercept','cv', 'alphas',
                                                                'scoring', 'class_weight', 'store_cv_values'])
     # notFound must be empty
     assert(not notFound)

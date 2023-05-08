@@ -73,10 +73,6 @@ class Ridge(ScikitLearnBase):
     specs.addSub(InputData.parameterInputFactory("fit_intercept", contentType=InputTypes.BoolType,
                                                  descr=r"""Whether the intercept should be estimated or not. If False,
                                                   the data is assumed to be already centered.""", default=True))
-    specs.addSub(InputData.parameterInputFactory("normalize", contentType=InputTypes.BoolType,
-                                                 descr=r"""This parameter is ignored when fit_intercept is set to False. If True, the
-                                                 regressors X will be normalized before regression by subtracting the mean and dividing
-                                                 by the l2-norm. """, default=False))
     specs.addSub(InputData.parameterInputFactory("max_iter", contentType=InputTypes.IntegerType,
                                                  descr=r"""Maximum number of iterations for conjugate gradient solver.""", default=None))
     specs.addSub(InputData.parameterInputFactory("tol", contentType=InputTypes.FloatType,
@@ -107,7 +103,7 @@ class Ridge(ScikitLearnBase):
     """
     super()._handleInput(paramInput)
     settings, notFound = paramInput.findNodesAndExtractValues(['alpha','fit_intercept','max_iter',
-                                                               'normalize','tol','solver'])
+                                                               'tol','solver'])
     # notFound must be empty
     assert(not notFound)
     self.initializeModel(settings)
