@@ -192,6 +192,42 @@ Indeed, Both \textbf{PointSet} and \textbf{HistorySet} can be accepted by this p
 If the name of given variable to be compared is unique, it can be used directly, otherwise the variable can be specified
 with $DataObjectName|InputOrOutput|VariableName$ nomenclature.
 
+The \xmlNode{Output} node of the \xmlNode{PointSet} the \xmlNode{Representativity} Postprocessor, accepts outputs like:
+\begin{itemize}
+  \item BiasFactor\_Mock\{prototype output $var_i$  name\}\_Tar\{target output $var_j$ name\}:
+
+    representativity or bias factor of prototype output (measurable) i with respect to target j
+
+    	assuming no measurement uncertainty in the mock model
+
+    	 (i.e., BiasFactor\_MockF1\_TarFOM2).
+
+  \item ExactBiasFactor\_Mock\{prototype output $var_i$ name\}\_Tar\{target output $var_j$ name\}:
+
+   representativity or bias factor of prototype output (measurable) i with respect to target j
+
+    considering measurements uncertainty in the mock model
+
+     (i.e., ExactBiasFactor\_MockF1\_TarFOM2).
+
+  \item CorrectedParameters\_{parameter_i name}: the adjusted/corrected value of parameter_i due to the analysis
+
+  \item CorrectedTargets\_{output_i name}: the adjusted/corrected value of target_i due to the analysis
+
+  \item VarianceInCorrectedParameter_{parameter_i name}: variance in Corrected parameter_i (squared uncertainty)
+
+  \item CovarianceInCorrectedParameters\_{parameter_i name}\_{parameter_j name}: Covariance between parameter_i and parameter_j
+
+  \item CorrectedVar\_Tar{target_i var name}: variance in corrected target_i
+
+  \item ExactCorrectedVar\_Tar{target_i var name}: exact variance in corrected target_i considering uncertainty in measurements in the mock model
+
+  \item CorrectedCov\_Tar{target var_i name}\_Tar{target var_j name}: covariance between corrected target_i and corrected target_j
+
+  \item ExactCorrectedCov\_Tar{target var_i name}\_Tar{target var_j name} exact covariance between corrected target_i and corrected target_j considering uncertainties in measurements in the mock model.
+\end{itemize}
+
+
 \textbf{Example:}
 \begin{lstlisting}[style=XML,morekeywords={subType}]
 <Simulation>
@@ -224,6 +260,57 @@ with $DataObjectName|InputOrOutput|VariableName$ nomenclature.
 	</PostProcessor>
 ...
 <Models>
+...
+<PointSet name="pp1_metric">
+  <Input>InputPlaceHolder</Input>
+  <Output>
+    BiasFactor_MockF1_TarFOM1,
+    BiasFactor_MockF1_TarFOM2,
+    BiasFactor_MockF1_TarFOM3,
+    BiasFactor_MockF2_TarFOM1,
+    BiasFactor_MockF2_TarFOM2,
+    BiasFactor_MockF2_TarFOM3,
+    BiasFactor_MockF3_TarFOM1,
+    BiasFactor_MockF3_TarFOM2,
+    BiasFactor_MockF3_TarFOM3,
+    ExactBiasFactor_MockF1_TarFOM1,
+    ExactBiasFactor_MockF1_TarFOM2,
+    ExactBiasFactor_MockF1_TarFOM3,
+    ExactBiasFactor_MockF2_TarFOM1,
+    ExactBiasFactor_MockF2_TarFOM2,
+    ExactBiasFactor_MockF2_TarFOM3,
+    ExactBiasFactor_MockF3_TarFOM1,
+    ExactBiasFactor_MockF3_TarFOM2,
+    ExactBiasFactor_MockF3_TarFOM3,
+    CorrectedParameters_p1,
+    CorrectedParameters_p2,
+    CorrectedTargets_FOM1,
+    CorrectedTargets_FOM2,
+    CorrectedTargets_FOM3,
+    VarianceInCorrectedParameters_p1,
+    VarianceInCorrectedParameters_p2,
+    CovarianceInCorrectedParameters_p1_p2,
+    CovarianceInCorrectedParameters_p2_p1,
+    CorrectedVar_TarFOM1,
+    CorrectedVar_TarFOM2,
+    CorrectedVar_TarFOM3,
+    ExactCorrectedVar_TarFOM1,
+    ExactCorrectedVar_TarFOM2,
+    ExactCorrectedVar_TarFOM3,
+    CorrectedCov_TarFOM1_TarFOM2,
+    CorrectedCov_TarFOM2_TarFOM1,
+    CorrectedCov_TarFOM1_TarFOM3,
+    CorrectedCov_TarFOM3_TarFOM1,
+    CorrectedCov_TarFOM2_TarFOM3,
+    CorrectedCov_TarFOM3_TarFOM2,
+    ExactCorrectedCov_TarFOM1_TarFOM2,
+    ExactCorrectedCov_TarFOM2_TarFOM1,
+    ExactCorrectedCov_TarFOM1_TarFOM3,
+    ExactCorrectedCov_TarFOM3_TarFOM1,
+    ExactCorrectedCov_TarFOM2_TarFOM3,
+    ExactCorrectedCov_TarFOM3_TarFOM2
+  </Output>
+</PointSet>
 ...
 <Simulation>
 \end{lstlisting}
