@@ -610,3 +610,12 @@ class AdaptiveDynamicEventTree(DynamicEventTree, LimitSurfaceSearch):
     forceEvent = True if self.startAdaptive else False
     if returncode:
       self._createRunningQueue(model,myInput, forceEvent)
+
+  def _localHandleFailedRuns(self, failedRuns):
+    """
+      Specialized method for samplers to handle failed runs.  Defaults to failing runs.
+      @ In, failedRuns, list, list of JobHandler.ExternalRunner objects
+      @ Out, None
+    """
+    if len(failedRuns) > 0:
+      self.raiseAWarning('  some of (Adaptive) Dynamic Event Tree branches failed. Conditional probabilities might be incorrect for some branches!')
