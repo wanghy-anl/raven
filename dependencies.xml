@@ -72,7 +72,7 @@ Note all install methods after "main" take
     <imageio source="pip">2.22</imageio>
     <line_profiler optional='True'/>
     <!-- <ete3 optional='True'/> -->
-    <pywavelets optional='True'>1.1</pywavelets>
+    <pywavelets>1.2</pywavelets>
     <python-sensors source="pip"/>
     <numdifftools source="pip">0.9</numdifftools>
     <fmpy optional='True'/>
@@ -83,6 +83,30 @@ Note all install methods after "main" take
     <cyipopt optional='True'/>
     <pyomo-extensions source="pyomo" skip_check='True' optional='True'/>
     <setuptools/>
+    <spacy>3.1</spacy>
+    <textacy/>
+    <pywsd source="pip"/>
+    <nltk source="pip"/>
+    <coreferee source='pip'/>
+    <beautifulsoup4 source="pip"/>
+    <networkx source="pip"/>
+    <!-- pysbd is used for sentence boundary disambiguation -->
+    <pysbd source="pip"/>
+    <tomli source='pip'/>
+    <numerizer source='pip'/>
+    <autocorrect source='pip'/>
+    <contextualSpellCheck source='pip'/>
+    <pywsd source='pip'/>
+    <jupyterlab source='pip'/>
+    <openpyxl source="pip"/>
+    <dill>0.3.5</dill>
+    <dispatches source='pip' optional='True'>1.1.0</dispatches>
+    <pyomo source='forge'>6.4</pyomo>
+    <pyutilib source='forge'/>
+    <glpk source='forge' skip_check='True'/>
+    <ipopt source='forge' skip_check='True'/>
+    <!-- Windows doesn't have a reasonably-accessible installer for coincbc -->
+    <coincbc os="mac,linux" source='forge' skip_check='True'>2.10.5</coincbc>
   </main>
   <alternate name="pip">
     <hdf5>remove</hdf5>
@@ -91,6 +115,9 @@ Note all install methods after "main" take
     <python>remove</python>
     <nomkl>remove</nomkl>
     <numexpr>remove</numexpr>
+    <coincbc>remove</coincbc>
+    <glpk>remove</glpk>
+    <ipopt>remove</ipopt>
   </alternate>
   <alternate name="none">
     <hdf5>remove</hdf5>
