@@ -293,13 +293,23 @@ class AdaptiveDynamicEventTree(DynamicEventTree, LimitSurfaceSearch):
     branchChangedParamPb    = []
     branchParams            = []
     if endInfo:
-      for key in endInfo['branchChangedParams'].keys():
-        branchParams.append(key)
-        branchChangedParamPb.append(endInfo['branchChangedParams'][key]['associatedProbability'][0])
-        branchChangedParamValue.append(endInfo['branchChangedParams'][key]['oldValue'][0])
-      subGroup.add('branchChangedParam',branchParams)
-      subGroup.add('branchChangedParamValue',branchChangedParamValue)
-      subGroup.add('branchChangedParamPb',branchChangedParamPb)
+      if 'None' not in endInfo['branchChangedParams']:
+        for key in endInfo['branchChangedParams'].keys():
+          branchParams.append(key)
+          branchChangedParamPb.append(endInfo['branchChangedParams'][key]['associatedProbability'][0])
+          branchChangedParamValue.append(endInfo['branchChangedParams'][key]['oldValue'][0])
+        subGroup.add('branchChangedParam',branchParams)
+        subGroup.add('branchChangedParamValue',branchChangedParamValue)
+        subGroup.add('branchChangedParamPb',branchChangedParamPb)
+      #else:
+      #  endInfo['n_branches'] = 2
+      #  if branchedLevel[endInfo['branchDist']] > len(self.branchProbabilities[endInfo['branchDist']])-1:
+      #    pb = 1.0
+      #  else:
+      #    pb = self.branchProbabilities[endInfo['branchDist']][branchedLevel[endInfo['branchDist']]]
+      #  endInfo['branchChangedParams']['None']['unchangedPb'] = 1.0 - pb
+      #  endInfo['branchChangedParams']['None']['associatedProbability'] = [pb]
+        
     # add conditional probability
     subGroup.add('conditionalPb',condPbC)
     # add initiator distribution info, start time, etc.
@@ -431,8 +441,13 @@ class AdaptiveDynamicEventTree(DynamicEventTree, LimitSurfaceSearch):
         except (IndexError, ValueError):
           ind = 0
         if value not in self.branchProbabilities[key]:
-          self.branchProbabilities[key].insert(ind,value)
-          self.branchValues[key].insert(ind,self.distDict[key].ppf(value))
+          bp =  self.branchProbabilities[key].tolist()
+          bp.insert(ind,value)
+          bv = self.branchValues[key].tolist()
+          bv.insert(ind,self.distDict[key].ppf(value))
+          self.branchProbabilities[key] = np.atleast_1d(bv)
+          self.branchValues[key] = np.atleast_1d(bv)
+          #self.branchValues[key].insert(ind,self.distDict[key].ppf(value))
         investigatedPoint[key] = value
       # collect investigated point
       self.investigatedPoints.append(investigatedPoint)

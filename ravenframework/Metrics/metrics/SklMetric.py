@@ -150,6 +150,8 @@ class SKL(MetricInterface):
     elif axis != 0:
       self.raiseAnError(IOError, "Valid axis value should be '0' or '1' for the evaluate method of metric", self. name, "value", axis, "is provided!")
     try:
+      print(x.shape)
+      print(y.shape)
       value = self.__class__.availMetrics[self.metricType[0]][self.metricType[1]](x, y, **dictTemp)
     except TypeError as e:
       self.raiseAWarning('There are some unexpected keyword arguments found in Metric with type "', self.metricType[1], '"!')
