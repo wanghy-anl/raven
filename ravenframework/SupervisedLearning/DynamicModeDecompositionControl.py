@@ -256,11 +256,10 @@ class DMDC(DMD):
     """
     if self._importances is None:
       from sklearn import preprocessing
-      from sklearn.ensemble import RandomForestRegressor
       # the importances are evaluated in the transformed space
       importanceMatrix = np.zeros(self.__Ctilde.shape)
       for smp in range(self.__Ctilde.shape[0]):
-        importanceMatrix[smp,:,:] = self.__Ctilde[smp,:,:]
+        importanceMatrix[smp,:,:] = np.absolute(self.__Ctilde[smp,:,:])
         scaler = preprocessing.MinMaxScaler()
         scaler.fit(importanceMatrix[smp,:,:].T)
         importanceMatrix[smp,:,:] = scaler.transform(importanceMatrix[smp,:,:].T).T
