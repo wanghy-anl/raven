@@ -265,7 +265,7 @@ class DMDC(DMD):
       self._importances = dict.fromkeys(self.parametersIDs+self.stateID,1.)
       if  self._importanceFormulation == 'gini':
         from sklearn.ensemble import RandomForestRegressor
-        
+
         totalFeatureSpace = np.zeros(((self.__Ctilde.shape[0]*3, self.__Ctilde.shape[2])))
         minSV = np.min(self.stateVals, axis=0)
         maxSV = np.max(self.stateVals, axis=0)
@@ -278,17 +278,17 @@ class DMDC(DMD):
           totalProjection[smp, :] =  np.dot(self.__Ctilde[smp, :, :], minSV[smp, :])
           totalProjection[smp+self.__Ctilde.shape[0], :] =  np.dot(self.__Ctilde[smp, :, :], maxSV[smp, :])
           totalProjection[smp+2*self.__Ctilde.shape[0], :] =  np.dot(self.__Ctilde[smp, :, :], avgSV[smp, :])
-          
+
         self.raiseADebug("Fitting rf!")
         rf = RandomForestRegressor(n_estimators=1000 , oob_score=True)
         rf.fit(totalFeatureSpace, totalProjection)
-         
+
         #rf = RandomForestRegressor(n_estimators=int((self.stateVals.shape[0]*self.stateVals.shape[1])/2), oob_score=True)
         #rf = RandomForestRegressor(n_estimators=10, n_jobs=-1, oob_score=True)
         #rfParameters = RandomForestRegressor(n_estimators=self.parameterValues.size, oob_score=True)
         rfParameters = RandomForestRegressor(n_estimators=1000, n_jobs=-1, oob_score=True)
         #concatenatedFeatures = np.zeros((self.stateVals.shape[0]*self.stateVals.shape[1], self.stateVals.shape[2]))
-        concatenatedFeatures = np.average(self.stateVals, axis=0) 
+        concatenatedFeatures = np.average(self.stateVals, axis=0)
         #concatenatedOutputs =  np.zeros((self.outputVals.shape[0]*self.outputVals.shape[1], self.outputVals.shape[2]))
         concatenatedOutputs =   np.average(self.outputVals, axis=0)
 
@@ -313,7 +313,7 @@ class DMDC(DMD):
           self._importances[stateId] = rfFeatureImportance[stateCnt]
         for featCnt, feat in enumerate(self.parametersIDs):
           self._importances[feat] = rfParamterFeatureImportance[featCnt]
-          
+
       else:
         # the importances are evaluated in the transformed space
         importanceMatrix = np.zeros(self.__Ctilde.shape)

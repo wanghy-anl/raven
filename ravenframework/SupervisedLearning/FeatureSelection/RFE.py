@@ -223,8 +223,8 @@ class RFE(FeatureSelectionBase):
       self.discrete.upperBound = 1
       self.discrete.strategy = "withReplacement"
       self.discrete.initializeDistribution()
-  
-      
+
+
       self.gaString = f"""
         <GeneticAlgorithm name="ga">
         <samplerInit>
@@ -233,7 +233,7 @@ class RFE(FeatureSelectionBase):
           <writeSteps>every</writeSteps>
           <type>min</type>
         </samplerInit>
-  
+
         <GAparams>
           <populationSize>{self.maxNumberFeatures * 10}</populationSize>
           <parentSelection>rouletteWheel</parentSelection>
@@ -248,16 +248,16 @@ class RFE(FeatureSelectionBase):
           <fitness type="feasibleFirst"/>
           <survivorSelection>fitnessBased</survivorSelection>
         </GAparams>
-  
+
         <convergence>
           <HDSM>0.99</HDSM>
         </convergence>
-        
+
         <objective>score</objective>
         <TargetEvaluation class="DataObjects" type="PointSet">featureSelectionPS</TargetEvaluation>
-        
+
 *RFE-variablesToReplace*
-        
+
         </GeneticAlgorithm>
         """
 
@@ -353,7 +353,7 @@ class RFE(FeatureSelectionBase):
       useParallel = jhandler.runInfoDict['batchSize'] > 1
       if jhandler._parallelLib != ParallelLibEnum.shared:
         sharedMemory = False
-        
+
 
     #FIXME: support and ranking for targets is only needed now because
     #       some features (e.g. DMDC state variables) are stored among the targets
@@ -386,9 +386,9 @@ class RFE(FeatureSelectionBase):
 
     # get estimator parameter
     originalParams = self.estimator.paramInput
-    
+
     #### DEBUG
-    
+
     if self.skipSearchAndTestFeatures is not None:
       f = np.asarray(self.parametersToInclude)
       def updateBestScoreToRemove(it, k, score, combo, survivors):
@@ -417,7 +417,7 @@ class RFE(FeatureSelectionBase):
           test[self.skipSearchAndTestFeatures.index(p)] = True
       if np.sum(support_) != len(self.skipSearchAndTestFeatures):
         self.raiseAnError(IOError, f"not found parameters {str(np.asarray(self.skipSearchAndTestFeatures)[~np.asarray(test)])}")
-      
+
       initialNumbOfFeatures = int(np.sum(support_))
       featuresForRanking = np.arange(nParams)[support_]
       originalSupport = copy.copy(support_)
@@ -429,9 +429,9 @@ class RFE(FeatureSelectionBase):
                        'originalParams':originalParams,'supportOfSupport_':supportOfSupport_,
                        'originalSupport':originalSupport, 'parametersToInclude':self.parametersToInclude,
                        'whichSpace':self.whichSpace,'onlyOutputScore':self.onlyOutputScore}
-      
+
       #self._scoring.original_function(X, y, featuresForRanking, supportData)
-      score, survivors, _ = self._scoring.original_function(copy.deepcopy(self.estimator), X, y, featuresForRanking,supportData)      
+      score, survivors, _ = self._scoring.original_function(copy.deepcopy(self.estimator), X, y, featuresForRanking,supportData)
       updateBestScoreToRemove(0, len(self.skipSearchAndTestFeatures), score, featuresForRanking, survivors)
       # Set final attributes
       supportIndex = 0
@@ -443,11 +443,11 @@ class RFE(FeatureSelectionBase):
         features = np.arange(nFeatures)[supportOfSupport_]
       else:
         targets = np.arange(nTargets)[supportOfSupport_]
-  
+
       self.nFeatures_ = support_.sum()
       self.support_ = support_
       self.globalSupport_ = supportOfSupport_
-  
+
       return features if self.whichSpace == 'feature' else targets, supportOfSupport_
 
     # clustering appraoch here
@@ -581,9 +581,9 @@ class RFE(FeatureSelectionBase):
       for fff in  f[support_]:
         startingVars.append(fff)
         gaStringToReplace += f'        <variable name="{fff}"> <distribution>forFeatureSelection</distribution> <initial>1</initial> </variable>\n'
-      
+
       initGa = self.gaString.replace("*RFE-variablesToReplace*",gaStringToReplace )
-      from ... import Optimizers      
+      from ... import Optimizers
       import xml.etree.ElementTree as ET
       block = ET.fromstring(initGa)
       kind, name, self.opt = Optimizers.factory.instanceFromXML(block)
@@ -602,25 +602,25 @@ class RFE(FeatureSelectionBase):
      </PointSet>
       """
       self._targetEvaluation._readMoreXML(ET.fromstring(te))
-      
+
       se = f"""
       <PointSet name="opt_export">
         <Input>trajID</Input>
         <Output>','.join(startingVars),score,age,batchId,fitness,iteration,accepted,HDSM,conv_HDSM</Output>
       </PointSet>
-      
+
       """
       self._solutionExport._readMoreXML(ET.fromstring(se))
       self.opt.assemblerDict['TargetEvaluation'] = [[None, None, self._targetEvaluation]]
-      
+
       # solution export
       #self.opt.initialize( solutionExport=self._solutionExport)
-      
-      
-      
+
+
+
       #featuresForRanking = np.arange(nParams)[support_]
-      
-      
+
+
       #######
       # NEW SEARCH
       # in here we perform a best subset search
